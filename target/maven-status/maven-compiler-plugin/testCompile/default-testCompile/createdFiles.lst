@@ -1,0 +1,8 @@
+edu/isu/isuese/detstrat/impl/ModularGrimeDetectorTest.class
+edu/isu/isuese/detstrat/impl/PathTest.class
+edu/isu/isuese/detstrat/impl/RuleProviderTest.class
+edu/isu/isuese/detstrat/impl/AbstractGrimeDetectorTest.class
+edu/isu/isuese/detstrat/impl/OrgGrimeDetectorTest.class
+edu/isu/isuese/detstrat/GraphUtilsTest.class
+edu/isu/isuese/detstrat/impl/GraphElementFactoryTest.class
+edu/isu/isuese/detstrat/impl/ClassGrimeDetectorTest.class
