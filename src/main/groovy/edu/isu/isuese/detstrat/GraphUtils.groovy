@@ -35,6 +35,10 @@ import edu.isu.isuese.detstrat.impl.Path
 import edu.isu.isuese.detstrat.impl.Relationship
 import org.apache.commons.lang3.tuple.Pair
 
+/**
+ * @author Isaac Griffith
+ * @version 1.3.0
+ */
 @Singleton
 class GraphUtils {
 

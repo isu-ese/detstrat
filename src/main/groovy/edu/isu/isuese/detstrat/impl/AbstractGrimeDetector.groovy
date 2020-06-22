@@ -25,11 +25,7 @@
  */
 package edu.isu.isuese.detstrat.impl
 
-import edu.isu.isuese.datamodel.Component
-import edu.isu.isuese.datamodel.Finding
-import edu.isu.isuese.datamodel.Namespace
-import edu.isu.isuese.datamodel.PatternInstance
-import edu.isu.isuese.datamodel.Reference
+import edu.isu.isuese.datamodel.*
 import edu.montana.gsoc.msusel.rbml.PatternLoader
 import edu.montana.gsoc.msusel.rbml.model.SPS
 

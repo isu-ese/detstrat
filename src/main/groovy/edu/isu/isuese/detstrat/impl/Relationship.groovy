@@ -25,7 +25,6 @@
  */
 package edu.isu.isuese.detstrat.impl
 
-
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 

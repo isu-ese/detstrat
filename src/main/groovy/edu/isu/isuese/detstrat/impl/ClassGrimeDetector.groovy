@@ -25,14 +25,11 @@
  */
 package edu.isu.isuese.detstrat.impl
 
-import com.google.common.collect.BiMap
-import com.google.common.collect.HashBasedTable
-import com.google.common.collect.HashBiMap
-import com.google.common.collect.Lists
-import com.google.common.collect.Maps
-import com.google.common.collect.Queues
-import com.google.common.collect.Table
-import com.google.common.graph.*
+import com.google.common.collect.*
+import com.google.common.graph.EndpointPair
+import com.google.common.graph.MutableNetwork
+import com.google.common.graph.Network
+import com.google.common.graph.NetworkBuilder
 import edu.isu.isuese.datamodel.*
 import org.apache.commons.lang3.tuple.Pair
 import org.apache.commons.lang3.tuple.Triple

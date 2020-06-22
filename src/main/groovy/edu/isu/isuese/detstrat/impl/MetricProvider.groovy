@@ -31,6 +31,10 @@ import edu.isu.isuese.datamodel.Rule
 import edu.montana.gsoc.msusel.metrics.MetricEvaluator
 import edu.montana.gsoc.msusel.metrics.annotations.MetricDefinition
 
+/**
+ * @author Isaac Griffith
+ * @version 1.3.0
+ */
 class MetricProvider {
 
     Map<String, Metric> metricMap = [:]

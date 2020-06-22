@@ -25,6 +25,10 @@
  */
 package edu.isu.isuese.detstrat.impl
 
+/**
+ * @author Isaac Griffith
+ * @version 1.3.0
+ */
 class NamespaceRelation extends Relationship {
 
     List<Relationship> contained = []

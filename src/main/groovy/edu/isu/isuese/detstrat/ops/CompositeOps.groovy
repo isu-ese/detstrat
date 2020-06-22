@@ -27,6 +27,10 @@ package edu.isu.isuese.detstrat.ops
 
 import edu.isu.isuese.detstrat.Operator
 
+/**
+ * @author Isaac Griffith
+ * @version 1.3.0
+ */
 @Singleton
 class CompositeOps implements Operator {
 

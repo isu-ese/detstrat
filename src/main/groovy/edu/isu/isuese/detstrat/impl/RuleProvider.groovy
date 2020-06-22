@@ -25,7 +25,6 @@
  */
 package edu.isu.isuese.detstrat.impl
 
-
 import edu.isu.isuese.datamodel.Priority
 import edu.isu.isuese.datamodel.Rule
 import edu.isu.isuese.datamodel.RuleRepository

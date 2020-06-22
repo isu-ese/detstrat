@@ -25,17 +25,7 @@
  */
 package edu.isu.isuese.detstrat.impl
 
-import edu.isu.isuese.datamodel.Class
-import edu.isu.isuese.datamodel.Component
-import edu.isu.isuese.datamodel.Constructor
-import edu.isu.isuese.datamodel.Destructor
-import edu.isu.isuese.datamodel.Enum
-import edu.isu.isuese.datamodel.Field
-import edu.isu.isuese.datamodel.Initializer
-import edu.isu.isuese.datamodel.Interface
-import edu.isu.isuese.datamodel.Literal
-import edu.isu.isuese.datamodel.Method
-import edu.isu.isuese.datamodel.Namespace
+import edu.isu.isuese.datamodel.*
 
 /**
  * @author Isaac Griffith

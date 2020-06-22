@@ -31,6 +31,7 @@ import com.google.common.graph.MutableNetwork
 import com.google.common.graph.Network
 import com.google.common.graph.NetworkBuilder
 import edu.isu.isuese.datamodel.*
+import edu.isu.isuese.detstrat.impl.Relationship
 import edu.montana.gsoc.msusel.rbml.model.*
 
 /**

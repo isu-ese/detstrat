@@ -26,18 +26,9 @@
 package edu.isu.isuese.detstrat.impl
 
 import com.google.common.collect.Sets
-import edu.isu.isuese.datamodel.Measurable
-import edu.isu.isuese.datamodel.Measure
-import edu.isu.isuese.datamodel.PatternInstance
-import edu.isu.isuese.datamodel.Project
-import edu.isu.isuese.datamodel.RuleRepository
+import edu.isu.isuese.datamodel.*
 import edu.montana.gsoc.msusel.metrics.MetricEvaluator
-import edu.montana.gsoc.msusel.metrics.annotations.MetricCategory
-import edu.montana.gsoc.msusel.metrics.annotations.MetricDefinition
-import edu.montana.gsoc.msusel.metrics.annotations.MetricProperties
-import edu.montana.gsoc.msusel.metrics.annotations.MetricScale
-import edu.montana.gsoc.msusel.metrics.annotations.MetricScope
-import edu.montana.gsoc.msusel.metrics.annotations.MetricType
+import edu.montana.gsoc.msusel.metrics.annotations.*
 
 /**
  * Grime Size is a count of the instances of all types of grime

@@ -28,6 +28,10 @@ package edu.isu.isuese.detstrat
 import edu.isu.isuese.datamodel.Finding
 import edu.isu.isuese.datamodel.Project
 
+/**
+ * @author Isaac Griffith
+ * @version 1.3.0
+ */
 interface Detector {
 
     List<Finding> detect(Project project)

@@ -25,6 +25,10 @@
  */
 package edu.isu.isuese.detstrat.ops
 
+/**
+ * @author Isaac Griffith
+ * @version 1.3.0
+ */
 class MetricAbsoluteOps {
 
     def higherThan() {

@@ -25,6 +25,10 @@
  */
 package edu.isu.isuese.detstrat.impl
 
+/**
+ * @author Isaac Griffith
+ * @version 1.3.0
+ */
 interface GrimeDetectorConstants {
 
     String RULE_REPO_KEY = "isuese:grime-rules"

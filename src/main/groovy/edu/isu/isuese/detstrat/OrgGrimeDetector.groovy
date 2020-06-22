@@ -25,7 +25,9 @@
  */
 package edu.isu.isuese.detstrat
 
+/**
+ * @author Isaac Griffith
+ * @version 1.3.0
+ */
 abstract class OrgGrimeDetector implements Detector {
-
-
 }
