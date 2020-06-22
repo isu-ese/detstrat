@@ -466,47 +466,46 @@ class ModularGrimeDetector extends AbstractGrimeDetector {
         graph.edges().each { edge ->
             //   if r is invalid then
             if (edge.invalid) {
-                //       if r is internal then
+                // if r is internal then
                 EndpointPair<Node> nodePair = graph.incidentNodes(edge)
                 if (nodePair.source().internal && nodePair.target().internal) {
-                    //           if r persistent then
+                    // if r persistent then
                     if (edge.persistent && edge.invalid) {
-                        //              add PIG issue for that relationship
-                        findings << createFinding("PIG", nodes.inverse().get(nodePair.source()).createReference())
+                        // add PIG issue for that relationship
+                        findings << createFinding("PIG", nodes.inverse().get(nodePair.source()))
                     }
-                    //           else
+                    // else
                     else if (edge.invalid) {
-                        //              add TIG issue for that relationship
-                        findings << createFinding("TIG", nodes.inverse().get(nodePair.source()).createReference())
+                        // add TIG issue for that relationship
+                        findings << createFinding("TIG", nodes.inverse().get(nodePair.source()))
                     }
                 }
-                //       else
+                // else
                 else if (nodePair.source().internal || nodePair.target().internal) {
-                    //           if r is persistent
+                    // if r is persistent
                     if (edge.persistent && edge.invalid) {
-                        //              if Ca increases
+                        // if Ca increases
                         if (nodePair.target().internal && metrics.get(edge, "Ca") > 0) {
-                            //                  add PEAG issue for that relationship
-                            findings << createFinding("PEAG", nodes.inverse().get(nodePair.source()).createReference())
+                            // add PEAG issue for that relationship
+                            findings << createFinding("PEAG", nodes.inverse().get(nodePair.source()))
                         }
-                        //              else if Ce increases
+                        // else if Ce increases
                         else if (nodePair.source().internal && metrics.get(edge, "Ce") > 0) {
-                            //                  add PEEG issue for that relationship
-
-                            findings << createFinding("PEEG", nodes.inverse().get(nodePair.source()).createReference())
+                            // add PEEG issue for that relationship
+                            findings << createFinding("PEEG", nodes.inverse().get(nodePair.source()))
                         }
                     }
-                    //           else
+                    // else
                     else if (edge.invalid) {
-                        //              if Ca increases
+                        // if Ca increases
                         if (nodePair.target().internal && metrics.get(edge, "Ca") > 0) {
-                            //                  add TEAG issue for that relationship
-                            findings << createFinding("TEAG", nodes.inverse().get(nodePair.source()).createReference())
+                            // add TEAG issue for that relationship
+                            findings << createFinding("TEAG", nodes.inverse().get(nodePair.source()))
                         }
-                        //              else if Ce increases
+                        // else if Ce increases
                         else if (nodePair.source().internal && metrics.get(edge, "Ce") > 0) {
-                            //                  add TEEG issue for that relationship
-                            findings << createFinding("TEEG", nodes.inverse().get(nodePair.source()).createReference())
+                            // add TEEG issue for that relationship
+                            findings << createFinding("TEEG", nodes.inverse().get(nodePair.source()))
                         }
                     }
                 }

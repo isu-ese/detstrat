@@ -25,8 +25,9 @@
  */
 package edu.isu.isuese.detstrat.impl
 
-
+import edu.isu.isuese.datamodel.Component
 import edu.isu.isuese.datamodel.Finding
+import edu.isu.isuese.datamodel.Namespace
 import edu.isu.isuese.datamodel.PatternInstance
 import edu.isu.isuese.datamodel.Reference
 import edu.montana.gsoc.msusel.rbml.PatternLoader
@@ -47,6 +48,45 @@ abstract class AbstractGrimeDetector implements GrimeDetector {
         println "Finding of $name on ${ref.getRefKey()}"
         if (RuleProvider.instance.getRule(name))
             Finding.of(RuleProvider.instance.getRule(name).getKey()).on(ref)
+        else
+            null
+    }
+
+    Finding createFinding(String name, PatternInstance inst) {
+        if (!name)
+            throw new IllegalArgumentException()
+        if (!inst)
+            throw new IllegalArgumentException()
+
+        println "Finding of $name on ${inst.getInstKey()}"
+        if (RuleProvider.instance.getRule(name))
+            Finding.of(RuleProvider.instance.getRule(name).getKey()).on(inst)
+        else
+            null
+    }
+
+    Finding createFinding(String name, Namespace ns) {
+        if (!name)
+            throw new IllegalArgumentException()
+        if (!ns)
+            throw new IllegalArgumentException()
+
+        println "Finding of $name on ${ns.getNsKey()}"
+        if (RuleProvider.instance.getRule(name))
+            Finding.of(RuleProvider.instance.getRule(name).getKey()).on(ns)
+        else
+            null
+    }
+
+    Finding createFinding(String name, Component comp) {
+        if (!name)
+            throw new IllegalArgumentException()
+        if (!comp)
+            throw new IllegalArgumentException()
+
+        println "Finding of $name on ${comp.getCompKey()}"
+        if (RuleProvider.instance.getRule(name))
+            Finding.of(RuleProvider.instance.getRule(name).getKey()).on(comp)
         else
             null
     }

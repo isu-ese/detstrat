@@ -157,20 +157,20 @@ class OrgGrimeDetector extends AbstractGrimeDetector {
             // MPECG
             if (rel.persistent && ((dest.patternInternal && !src.patternInternal) || (src.patternInternal && !dest.patternInternal)) &&
                     cycle(src, dest, rel)) {
-                findings << createFinding("MPECG", rel, typeGraph)
+                findings << createFinding("MPECG", rel, nsGraph)
             }
             // MTECG
             else if (!rel.persistent && ((dest.patternInternal && !src.patternInternal) || (src.patternInternal && !dest.patternInternal)) &&
                     cycle(src, dest, rel)) {
-                findings << createFinding("MTECG", rel, typeGraph)
+                findings << createFinding("MTECG", rel, nsGraph)
             }
             // MPICG
             else if (rel.persistent && (dest.patternInternal && src.patternInternal) && cycle(src, dest, rel)) {
-                findings << createFinding("MPICG", rel, typeGraph)
+                findings << createFinding("MPICG", rel, nsGraph)
             }
             // MTICG
             else if (!rel.persistent && (dest.patternInternal && src.patternInternal) && cycle(src, dest, rel)) {
-                findings << createFinding("MTICG", rel, typeGraph)
+                findings << createFinding("MTICG", rel, nsGraph)
             }
             // MPEUG
             else if (rel.persistent && ((dest.patternInternal && !src.patternInternal) || (src.patternInternal && !dest.patternInternal)) &&
@@ -200,8 +200,7 @@ class OrgGrimeDetector extends AbstractGrimeDetector {
             throw new IllegalArgumentException()
 
         Namespace t = nsBiMap.inverse()[graph.incidentNodes(rel).source()]
-        Reference ref = t.createReference()
-        createFinding(name, ref)
+        createFinding(name, t)
     }
 
     Finding createFinding(String name, Node node) {
@@ -209,8 +208,7 @@ class OrgGrimeDetector extends AbstractGrimeDetector {
             throw new IllegalArgumentException()
 
         Type t = typeBiMap.inverse()[node]
-        Reference ref = t.createReference()
-        createFinding(name, ref)
+        createFinding(name, t)
     }
 
     def findPatternNamespaces(PatternInstance p) {
