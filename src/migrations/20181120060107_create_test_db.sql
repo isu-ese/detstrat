@@ -512,6 +512,7 @@ create table parameters
 (
     id          INTEGER NOT NULL PRIMARY KEY Autoincrement,
     name        VARCHAR,
+    varg        INTEGER,
     parent_id   INTEGER,
     parent_type VARCHAR,
     created_at  NUMERIC,
