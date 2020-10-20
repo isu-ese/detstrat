@@ -217,6 +217,7 @@ create table measures
 (
     id         INTEGER NOT NULL PRIMARY KEY Autoincrement,
     measureKey VARCHAR,
+    metricKey  VARCHAR,
     value      DOUBLE,
     created_at NUMERIC,
     updated_at NUMERIC
