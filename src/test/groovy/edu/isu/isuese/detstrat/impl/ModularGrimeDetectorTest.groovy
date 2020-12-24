@@ -1332,6 +1332,12 @@ class ModularGrimeDetectorTest extends DBSpec {
         mod.addNamespace(ns4)
         mod.addNamespace(ns5)
         ns1.addNamespace(ns6)
+        proj.addNamespace(ns1)
+        proj.addNamespace(ns2)
+        proj.addNamespace(ns3)
+        proj.addNamespace(ns4)
+        proj.addNamespace(ns5)
+        proj.addNamespace(ns6)
         proj.addModule(mod)
         sys.addProject(proj)
 
