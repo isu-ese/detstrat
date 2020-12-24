@@ -77,6 +77,7 @@ class ModularGrimeDetector extends AbstractGrimeDetector {
         GraphElementFactory factory = GraphElementFactory.instance
 
         List<Type> types = pattern.getTypes()
+        println("Types: ${types.size()}")
 
         types.each { type ->
             Node node = factory.createNode(type)
@@ -286,6 +287,12 @@ class ModularGrimeDetector extends AbstractGrimeDetector {
 
         superTypes.each { cl ->
             subTypes.each { cls ->
+                println("Nodes[cls]: ${nodes[cls]}")
+                println("Nodes[cl]: ${nodes[cl]}")
+                println("Nodes contains cls: ${nodes.containsKey(cls)}")
+                println("Nodes contains cl: ${nodes.containsKey(cl)}")
+                println("CLS: ${cls.name}")
+                println("CL: ${cl.name}")
                 graph.edgesConnecting(nodes[cls], nodes[cl]).findAll { !it.marked && (it.type == RelationshipType.Generalization || it.type == RelationshipType.Realization) }.each {
                     it.marked = true
                     it.invalid = false

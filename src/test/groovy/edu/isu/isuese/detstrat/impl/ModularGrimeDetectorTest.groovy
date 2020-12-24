@@ -103,11 +103,26 @@ class ModularGrimeDetectorTest extends DBSpec {
     @Test
     void "test constructPatternGraph happy path"() {
         // given
+        RuleProvider.instance.repository()
+        RuleProvider.instance.rules()
         createModelComponents()
         createPatternInstance()
 
         // when
         Network<Node, Relationship> result = fixture.constructPatternGraph(inst)
+        println("Sys Projs: ${sys.getProjects().size()}")
+        println("Bindings: ${inst.getRoleBindings().size()}")
+        inst.getRoleBindings().each {
+            println("RefKey: ${it.getReference().refKey}")
+            println("Comp: ${it.getReference().getReferencedComponent(proj)}")
+        }
+
+        inst.getAllTypes().each {
+            println it.name
+        }
+        result.nodes().each {
+            println it.name
+        }
         result.edges().each {
             println result.incidentNodes(it)
         }
@@ -1303,8 +1318,8 @@ class ModularGrimeDetectorTest extends DBSpec {
 
     void createModelComponents() {
         sys = System.builder().name("testdata").key("TestData").basePath("testdata").create()
-        proj = Project.builder().name("testproj").version("1.0").relPath("testproj").create()
-        Module mod = Module.builder().name("testmod").relPath("testmod").srcPath("src/main/java").create()
+        proj = Project.builder().name("testproj").projKey("testproj").version("1.0").relPath("testproj").create()
+        Module mod = Module.builder().name("testmod").moduleKey("testmod").relPath("testmod").srcPath("src/main/java").create()
         ns1 = Namespace.builder().name("test").nsKey("test1").relPath("test").create()
         ns2 = Namespace.builder().name("test").nsKey("test2").relPath("test/test").create()
         ns3 = Namespace.builder().name("test2").nsKey("test3").relPath("test/test2").create()
@@ -1320,54 +1335,56 @@ class ModularGrimeDetectorTest extends DBSpec {
         proj.addModule(mod)
         sys.addProject(proj)
 
-        File fileA = File.builder().name("TypeA.java").relPath("TypeA.java").type(FileType.SOURCE).start(1).end(8).create()
-        typeA = Class.builder().name("TypeA").accessibility(Accessibility.PUBLIC).start(3).end(8).create()
+        File fileA = File.builder().name("TypeA.java").fileKey("TypeA.java").relPath("TypeA.java").type(FileType.SOURCE).start(1).end(8).create()
+        typeA = Class.builder().name("TypeA").compKey("TypeA").accessibility(Accessibility.PUBLIC).start(3).end(8).create()
         fileA.addType(typeA)
         ns4.addFile(fileA)
 
-        File fileB = File.builder().name("TypeB.java").relPath("TypeB.java").type(FileType.SOURCE).start(1).end(7).create()
-        typeB = Class.builder().name("TypeB").accessibility(Accessibility.PUBLIC).start(3).end(7).create()
+        File fileB = File.builder().name("TypeB.java").fileKey("TypeB.java").relPath("TypeB.java").type(FileType.SOURCE).start(1).end(7).create()
+        typeB = Class.builder().name("TypeB").compKey("TypeB").accessibility(Accessibility.PUBLIC).start(3).end(7).create()
         typeB.addModifier("ABSTRACT")
         fileB.addType(typeB)
         ns2.addFile(fileB)
 
-        File fileC = File.builder().name("TypeC.java").relPath("TypeC.java").type(FileType.SOURCE).start(1).end(8).create()
-        typeC = Class.builder().name("TypeC").accessibility(Accessibility.PUBLIC).start(3).end(8).create()
+        File fileC = File.builder().name("TypeC.java").fileKey("TypeC.java").relPath("TypeC.java").type(FileType.SOURCE).start(1).end(8).create()
+        typeC = Class.builder().name("TypeC").compKey("TypeC").accessibility(Accessibility.PUBLIC).start(3).end(8).create()
         fileC.addType(typeC)
         ns5.addFile(fileC)
 
-        File fileD = File.builder().name("TypeD.java").relPath("TypeD.java").type(FileType.SOURCE).start(1).end(7).create()
-        typeD = Class.builder().name("TypeD").accessibility(Accessibility.PUBLIC).start(3).end(7).create()
+        File fileD = File.builder().name("TypeD.java").fileKey("TypeD.java").relPath("TypeD.java").type(FileType.SOURCE).start(1).end(7).create()
+        typeD = Class.builder().name("TypeD").compKey("TypeD").accessibility(Accessibility.PUBLIC).start(3).end(7).create()
         fileD.addType(typeD)
         ns2.addFile(fileD)
 
-        File fileE = File.builder().name("TypeE.java").relPath("TypeE.java").type(FileType.SOURCE).start(1).end(7).create()
-        typeE = Class.builder().name("TypeE").accessibility(Accessibility.PUBLIC).start(3).end(7).create()
+        File fileE = File.builder().name("TypeE.java").fileKey("TypeE.java").relPath("TypeE.java").type(FileType.SOURCE).start(1).end(7).create()
+        typeE = Class.builder().name("TypeE").compKey("TypeE").accessibility(Accessibility.PUBLIC).start(3).end(7).create()
         fileE.addType(typeE)
         ns2.addFile(fileE)
 
-        File fileF = File.builder().name("TypeF.java").relPath("TypeF.java").type(FileType.SOURCE).start(1).end(7).create()
-        typeF = Class.builder().name("TypeF").accessibility(Accessibility.PUBLIC).start(3).end(7).create()
+        File fileF = File.builder().name("TypeF.java").fileKey("TypeF.java").relPath("TypeF.java").type(FileType.SOURCE).start(1).end(7).create()
+        typeF = Class.builder().name("TypeF").compKey("TypeF").accessibility(Accessibility.PUBLIC).start(3).end(7).create()
         fileF.addType(typeF)
         ns1.addFile(fileF)
 
-        File fileG = File.builder().name("TypeG.java").relPath("TypeG.java").type(FileType.SOURCE).start(1).end(7).create()
-        typeG = Class.builder().name("TypeG").accessibility(Accessibility.PUBLIC).start(3).end(7).create()
+        File fileG = File.builder().name("TypeG.java").fileKey("TypeG.java").relPath("TypeG.java").type(FileType.SOURCE).start(1).end(7).create()
+        typeG = Class.builder().name("TypeG").compKey("TypeG").accessibility(Accessibility.PUBLIC).start(3).end(7).create()
         fileG.addType(typeG)
         ns2.addFile(fileG)
 
-        File fileH = File.builder().name("TypeH.java").relPath("TypeH.java").type(FileType.SOURCE).start(1).end(5).create()
-        typeH = Class.builder().name("TypeH").accessibility(Accessibility.PUBLIC).start(3).end(5).create()
+        File fileH = File.builder().name("TypeH.java").fileKey("TypeH.java").relPath("TypeH.java").type(FileType.SOURCE).start(1).end(5).create()
+        typeH = Class.builder().name("TypeH").compKey("TypeH").accessibility(Accessibility.PUBLIC).start(3).end(5).create()
         fileH.addType(typeH)
         ns3.addFile(fileH)
 
-        File fileI = File.builder().name("TypeI.java").relPath("TypeI.java").type(FileType.SOURCE).start(1).end(5).create()
-        typeI = Class.builder().name("TypeI").accessibility(Accessibility.PUBLIC).start(3).end(5).create()
+        File fileI = File.builder().name("TypeI.java").fileKey("TypeI.java").relPath("TypeI.java").type(FileType.SOURCE).start(1).end(5).create()
+        typeI = Class.builder().name("TypeI").compKey("TypeI").accessibility(Accessibility.PUBLIC).start(3).end(5).create()
         fileI.addType(typeI)
         ns3.addFile(fileI)
 
         sys.updateKeys()
+        println("Parent Sys: ${proj.getParentSystem()}")
         typeA.refresh()
+        println("Parent file: ${typeA.getParentFile()}")
         typeB.refresh()
         typeC.refresh()
         typeD.refresh()
@@ -1397,7 +1414,7 @@ class ModularGrimeDetectorTest extends DBSpec {
         Field fldCB = Field.builder().name("typecb").type(typeB.createTypeRef()).accessibility(Accessibility.PRIVATE).start(5).end(5).create()
         typeC.addMember(fldCB)
 
-        Method mA = Method.builder().name("methodA").type(TypeRef.createPrimitiveTypeRef("void")).accessibility(Accessibility.PUBLIC).start(6).end(7).create()
+        Method mA = Method.builder().name("methodA").compKey("methodA").type(TypeRef.createPrimitiveTypeRef("void")).accessibility(Accessibility.PUBLIC).start(6).end(7).create()
         typeA.addMember(mA)
         Method mB = Method.builder().name("methodB").type(TypeRef.createPrimitiveTypeRef("void")).accessibility(Accessibility.PUBLIC).start(5).end(6).create()
         typeB.addMember(mB)
@@ -1424,6 +1441,35 @@ class ModularGrimeDetectorTest extends DBSpec {
         typeE.associatedTo(typeI)
 
         sys.updateKeys()
+        typeA.refresh()
+        typeB.refresh()
+        typeC.refresh()
+        typeD.refresh()
+        typeE.refresh()
+        typeF.refresh()
+        typeG.refresh()
+        typeH.refresh()
+        typeI.refresh()
+        fileA.refresh()
+        fileB.refresh()
+        fileC.refresh()
+        fileD.refresh()
+        fileE.refresh()
+        fileF.refresh()
+        fileG.refresh()
+        fileH.refresh()
+        fileI.refresh()
+        ns1.refresh()
+        ns2.refresh()
+        ns3.refresh()
+        ns4.refresh()
+        ns5.refresh()
+        ns6.refresh()
+
+        typeA.refresh()
+        println("Sys: ${sys.getKey()}")
+        println("Proj: ${proj.getProjectKey()}")
+        println("Type A: ${typeA.getCompKey()}")
     }
 
     private void associateNodesAndTypes() {
@@ -1440,17 +1486,17 @@ class ModularGrimeDetectorTest extends DBSpec {
 
     private void createPatternInstance() {
         Pattern p = Pattern.findFirst("name = ?", "Strategy")
-        inst = PatternInstance.builder().instKey().create()
+        inst = PatternInstance.builder().instKey("inst01").create()
         p.addInstance(inst)
         proj.addPatternInstance(inst)
 
         Role roleA = Role.builder().name("Context").type(RoleType.CLASSIFIER).create()
         Role roleB = Role.builder().name("AbstractStrategy").type(RoleType.CLASSIFIER).create()
         Role roleC = Role.builder().name("ConcreteStrategy").type(RoleType.CLASSIFIER).create()
-        Role roleAB = Role.builder().name("RoleAB").type(RoleType.RELATION).create()
-        Role roleCB = Role.builder().name("RoleCB").type(RoleType.RELATION).create()
-        Role roleDB = Role.builder().name("RoleDC").type(RoleType.RELATION).create()
-        Role roleEB = Role.builder().name("RoleEB").type(RoleType.RELATION).create()
+//        Role roleAB = Role.builder().name("RoleAB").type(RoleType.RELATION).create()
+//        Role roleCB = Role.builder().name("RoleCB").type(RoleType.RELATION).create()
+//        Role roleDB = Role.builder().name("RoleDC").type(RoleType.RELATION).create()
+//        Role roleEB = Role.builder().name("RoleEB").type(RoleType.RELATION).create()
 
         Role roleMA = Role.builder().name("RoleMA").type(RoleType.BEHAVE_FEAT).create()
 

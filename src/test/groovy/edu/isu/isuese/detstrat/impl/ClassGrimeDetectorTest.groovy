@@ -887,6 +887,10 @@ class ClassGrimeDetectorTest extends DBSpec {
 
     private void associateNodesAndTypes() {
         fixture.fieldBiMap[fld1] = a1
+        println("Fixture: $fixture")
+        println("fieldBiMap: ${fixture.fieldBiMap.size()}")
+        println("a2: $a2")
+        println("mapping: ${fixture.fieldBiMap.get(fld2)}")
         fixture.fieldBiMap[fld2] = a2
         fixture.fieldBiMap[fld3] = a3
         fixture.methodBiMap[meth1] = m1
