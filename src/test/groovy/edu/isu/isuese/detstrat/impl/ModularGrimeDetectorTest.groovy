@@ -1339,47 +1339,56 @@ class ModularGrimeDetectorTest extends DBSpec {
         typeA = Class.builder().name("TypeA").compKey("TypeA").accessibility(Accessibility.PUBLIC).start(3).end(8).create()
         fileA.addType(typeA)
         ns4.addFile(fileA)
+        proj.addFile(fileA)
 
         File fileB = File.builder().name("TypeB.java").fileKey("TypeB.java").relPath("TypeB.java").type(FileType.SOURCE).start(1).end(7).create()
         typeB = Class.builder().name("TypeB").compKey("TypeB").accessibility(Accessibility.PUBLIC).start(3).end(7).create()
         typeB.addModifier("ABSTRACT")
         fileB.addType(typeB)
         ns2.addFile(fileB)
+        proj.addFile(fileB)
 
         File fileC = File.builder().name("TypeC.java").fileKey("TypeC.java").relPath("TypeC.java").type(FileType.SOURCE).start(1).end(8).create()
         typeC = Class.builder().name("TypeC").compKey("TypeC").accessibility(Accessibility.PUBLIC).start(3).end(8).create()
         fileC.addType(typeC)
         ns5.addFile(fileC)
+        proj.addFile(fileC)
 
         File fileD = File.builder().name("TypeD.java").fileKey("TypeD.java").relPath("TypeD.java").type(FileType.SOURCE).start(1).end(7).create()
         typeD = Class.builder().name("TypeD").compKey("TypeD").accessibility(Accessibility.PUBLIC).start(3).end(7).create()
         fileD.addType(typeD)
         ns2.addFile(fileD)
+        proj.addFile(fileD)
 
         File fileE = File.builder().name("TypeE.java").fileKey("TypeE.java").relPath("TypeE.java").type(FileType.SOURCE).start(1).end(7).create()
         typeE = Class.builder().name("TypeE").compKey("TypeE").accessibility(Accessibility.PUBLIC).start(3).end(7).create()
         fileE.addType(typeE)
         ns2.addFile(fileE)
+        proj.addFile(fileE)
 
         File fileF = File.builder().name("TypeF.java").fileKey("TypeF.java").relPath("TypeF.java").type(FileType.SOURCE).start(1).end(7).create()
         typeF = Class.builder().name("TypeF").compKey("TypeF").accessibility(Accessibility.PUBLIC).start(3).end(7).create()
         fileF.addType(typeF)
         ns1.addFile(fileF)
+        proj.addFile(fileF)
 
         File fileG = File.builder().name("TypeG.java").fileKey("TypeG.java").relPath("TypeG.java").type(FileType.SOURCE).start(1).end(7).create()
         typeG = Class.builder().name("TypeG").compKey("TypeG").accessibility(Accessibility.PUBLIC).start(3).end(7).create()
         fileG.addType(typeG)
         ns2.addFile(fileG)
+        proj.addFile(fileG)
 
         File fileH = File.builder().name("TypeH.java").fileKey("TypeH.java").relPath("TypeH.java").type(FileType.SOURCE).start(1).end(5).create()
         typeH = Class.builder().name("TypeH").compKey("TypeH").accessibility(Accessibility.PUBLIC).start(3).end(5).create()
         fileH.addType(typeH)
         ns3.addFile(fileH)
+        proj.addFile(fileH)
 
         File fileI = File.builder().name("TypeI.java").fileKey("TypeI.java").relPath("TypeI.java").type(FileType.SOURCE).start(1).end(5).create()
         typeI = Class.builder().name("TypeI").compKey("TypeI").accessibility(Accessibility.PUBLIC).start(3).end(5).create()
         fileI.addType(typeI)
         ns3.addFile(fileI)
+        proj.addFile(fileI)
 
         sys.updateKeys()
         println("Parent Sys: ${proj.getParentSystem()}")
@@ -1469,7 +1478,9 @@ class ModularGrimeDetectorTest extends DBSpec {
         typeA.refresh()
         println("Sys: ${sys.getKey()}")
         println("Proj: ${proj.getProjectKey()}")
+        println("Type A: ${typeA.getString("compKey")}")
         println("Type A: ${typeA.getCompKey()}")
+        println("Type A fn: ${typeA.getFullName()}")
     }
 
     private void associateNodesAndTypes() {
