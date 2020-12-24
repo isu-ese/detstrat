@@ -1338,14 +1338,14 @@ class ModularGrimeDetectorTest extends DBSpec {
         File fileA = File.builder().name("TypeA.java").fileKey("TypeA.java").relPath("TypeA.java").type(FileType.SOURCE).start(1).end(8).create()
         typeA = Class.builder().name("TypeA").compKey("TypeA").accessibility(Accessibility.PUBLIC).start(3).end(8).create()
         fileA.addType(typeA)
-        ns4.addFile(fileA)
+        ns4.addType(typeA)
         proj.addFile(fileA)
 
         File fileB = File.builder().name("TypeB.java").fileKey("TypeB.java").relPath("TypeB.java").type(FileType.SOURCE).start(1).end(7).create()
         typeB = Class.builder().name("TypeB").compKey("TypeB").accessibility(Accessibility.PUBLIC).start(3).end(7).create()
         typeB.addModifier("ABSTRACT")
         fileB.addType(typeB)
-        ns2.addFile(fileB)
+        ns2.addType(typeB)
         proj.addFile(fileB)
 
         File fileC = File.builder().name("TypeC.java").fileKey("TypeC.java").relPath("TypeC.java").type(FileType.SOURCE).start(1).end(8).create()
