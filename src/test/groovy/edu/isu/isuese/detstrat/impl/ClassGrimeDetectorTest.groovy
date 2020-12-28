@@ -639,8 +639,8 @@ class ClassGrimeDetectorTest extends DBSpec {
 
     void createModelComponents() {
         sys = System.builder().name("testdata").key("TestData").basePath("testdata").create()
-        proj = Project.builder().name("testproj").version("1.0").relPath("testproj").create()
-        Module mod = Module.builder().name("testmod").relPath("testmod").srcPath("src/main/java").create()
+        proj = Project.builder().name("testproj").projKey("testproj").version("1.0").relPath("testproj").create()
+        Module mod = Module.builder().name("testmod").moduleKey("testmod").relPath("testmod").srcPath("src/main/java").create()
         ns1 = Namespace.builder().name("test").nsKey("test1").relPath("test").create()
         ns2 = Namespace.builder().name("test").nsKey("test2").relPath("test/test").create()
 //        ns3 = Namespace.builder().name("test2").nsKey("test3").relPath("test/test2").create()
@@ -653,13 +653,16 @@ class ClassGrimeDetectorTest extends DBSpec {
 //        mod.addNamespace(ns4)
 //        mod.addNamespace(ns5)
 //        ns1.addNamespace(ns6)
+        proj.addNamespace(ns1)
+        proj.addNamespace(ns2)
         proj.addModule(mod)
         sys.addProject(proj)
 
-        File fileA = File.builder().name("TypeA.java").relPath("TypeA.java").type(FileType.SOURCE).start(1).end(19).create()
-        typeA = Class.builder().name("TypeA").accessibility(Accessibility.PUBLIC).start(3).end(19).create()
+        File fileA = File.builder().name("TypeA.java").fileKey("TypeA.java").relPath("TypeA.java").type(FileType.SOURCE).start(1).end(19).create()
+        typeA = Class.builder().name("TypeA").compKey("TypeA").accessibility(Accessibility.PUBLIC).start(3).end(19).create()
         fileA.addType(typeA)
-        ns2.addFile(fileA)
+        ns2.addType(typeA)
+        proj.addFile(fileA)
 
 //        File fileB = File.builder().name("TypeB.java").relPath("TypeB.java").type(FileType.SOURCE).start(1).end(7).create()
 //        typeB = Class.builder().name("TypeB").accessibility(Accessibility.PUBLIC).start(3).end(7).create()

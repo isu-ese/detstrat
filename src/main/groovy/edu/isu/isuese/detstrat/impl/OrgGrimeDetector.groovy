@@ -480,18 +480,16 @@ class OrgGrimeDetector extends AbstractGrimeDetector {
 
             nsGraph.addNode(nsNode)
 
-            ns.getFiles().each {
-                it.getAllTypes().each { Type t ->
-                    Node tNode = factory.createNode(t)
-                    typeBiMap[t] = tNode
-                    if (nsTypeMap[nsNode]) {
-                        nsTypeMap[nsNode] << tNode
-                    } else {
-                        nsTypeMap[nsNode] = [tNode]
-                    }
-
-                    typeGraph.addNode(tNode)
+            ns.getAllTypes().each { Type t ->
+                Node tNode = factory.createNode(t)
+                typeBiMap[t] = tNode
+                if (nsTypeMap[nsNode]) {
+                    nsTypeMap[nsNode] << tNode
+                } else {
+                    nsTypeMap[nsNode] = [tNode]
                 }
+
+                typeGraph.addNode(tNode)
             }
         }
     }
@@ -580,6 +578,7 @@ class OrgGrimeDetector extends AbstractGrimeDetector {
      * Where, afferent coupling is the number of classes outside (external to the pattern instance)
      * that depend on classes within the pattern instance (those fitting a role of the pattern).
      */
+
     def measureCa() {
         nsGraph.nodes().each { Node p ->
             int ca = 0
