@@ -291,8 +291,8 @@ class ModularGrimeDetector extends AbstractGrimeDetector {
                 println("Nodes[cl]: ${nodes[cl]}")
                 println("Nodes contains cls: ${nodes.containsKey(cls)}")
                 println("Nodes contains cl: ${nodes.containsKey(cl)}")
-                println("CLS: ${cls.name}")
-                println("CL: ${cl.name}")
+                println("CLS: ${cls}")
+                println("CL: ${cl}")
                 graph.edgesConnecting(nodes[cls], nodes[cl]).findAll { !it.marked && (it.type == RelationshipType.Generalization || it.type == RelationshipType.Realization) }.each {
                     it.marked = true
                     it.invalid = false
