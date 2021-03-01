@@ -176,7 +176,7 @@ class OrgGrimeDetector extends AbstractGrimeDetector {
                 findings << createFinding("MTEUG", rel, nsGraph)
             }
             // MPIUG
-            else if (rel.persitent && (dest.patternInternal && src.patternInternal) && dropInstability(rel)) {
+            else if (rel.persistent && (dest.patternInternal && src.patternInternal) && dropInstability(rel)) {
                 findings << createFinding("MPIUG", rel, nsGraph)
             }
             // MTIUG
@@ -357,7 +357,7 @@ class OrgGrimeDetector extends AbstractGrimeDetector {
                 pintD.each { v ->
                     if (!t || v != t) {
                         if (typeGraph.hasEdgeConnecting(u, v))
-                            rels << typeGraph.edgeConnecting(u, v).get()
+                            rels.addAll(typeGraph.edgesConnecting(u, v))
                     }
                 }
             }
@@ -524,22 +524,22 @@ class OrgGrimeDetector extends AbstractGrimeDetector {
                 Node nsNode1 = nsBiMap[ns1]
                 Node nsNode2 = nsBiMap[ns2]
 
-                Relationship nsRel = factory.createRelationship(relType)
-                nsRel.persistent = isPersistent(relType)
+//                Relationship nsRel = factory.createRelationship(relType)
+                rel.persistent = isPersistent(relType)
 
                 if (nsGraph.hasEdgeConnecting(nsNode1, nsNode2)) {
                     nsGraph.edgeConnecting(nsNode1, nsNode2).ifPresent { Relationship r ->
-                        if (!r.persistent && nsRel.persistent)
+                        if (!r.persistent && rel.persistent)
                             r.persistent = true
                         if (r instanceof NamespaceRelation) {
-                            r.contained << nsRel
+                            r.contained << rel
                         }
                     }
                 } else {
                     NamespaceRelation nsr = new NamespaceRelation()
                     nsGraph.addEdge(nsNode1, nsNode2, nsr)
-                    nsr.contained << nsRel
-                    if (!nsr.persistent && nsRel.persistent)
+                    nsr.contained << rel
+                    if (!nsr.persistent && rel.persistent)
                         nsr.persistent = true
                 }
             }

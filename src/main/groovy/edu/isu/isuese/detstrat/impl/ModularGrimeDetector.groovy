@@ -48,6 +48,9 @@ class ModularGrimeDetector extends AbstractGrimeDetector {
      */
     @Override
     List<Finding> detect(PatternInstance pattern) {
+        metrics = HashBasedTable.create()
+        nodes = HashBiMap.create()
+
         List<Finding> findings
         // 1. Construct Pattern Graph
         Network<Node, Relationship> graph = constructPatternGraph(pattern)
@@ -70,6 +73,7 @@ class ModularGrimeDetector extends AbstractGrimeDetector {
 
         MutableNetwork<Node, Relationship> graph = NetworkBuilder.directed()
                 .allowsParallelEdges(true)
+                .allowsSelfLoops(true)
                 .expectedNodeCount(1000)
                 .expectedEdgeCount(10000)
                 .build()
@@ -77,7 +81,6 @@ class ModularGrimeDetector extends AbstractGrimeDetector {
         GraphElementFactory factory = GraphElementFactory.instance
 
         List<Type> types = pattern.getTypes()
-        println("Types: ${types.size()}")
 
         types.each { type ->
             Node node = factory.createNode(type)
@@ -86,53 +89,77 @@ class ModularGrimeDetector extends AbstractGrimeDetector {
         }
 
         types.each { type ->
-            type.getGeneralizes().each { towards -> handleCreatingRelationships(type, towards, graph, RelationshipType.Generalization) }
-            type.getRealizes().each { towards -> handleCreatingRelationships(towards, type, graph, RelationshipType.Realization) }
+            type.getGeneralizes().each { towards ->
+                if (!nodes[towards]) {
+                    nodes[towards] = factory.createNode(towards)
+                    graph.addNode(nodes[towards])
+                }
+                handleCreatingRelationships(type, towards, graph, RelationshipType.Generalization)
+            }
+            type.getRealizes().each { towards ->
+                if (!nodes[towards]) {
+                    nodes[towards] = factory.createNode(towards)
+                    graph.addNode(nodes[towards])
+                }
+                handleCreatingRelationships(towards, type, graph, RelationshipType.Realization)
+            }
             type.getAssociatedTo().each { towards ->
-                if (!nodes[type] || !nodes[towards] || !graph.hasEdgeConnecting(nodes[type], nodes[towards]) ||
-                        (graph.hasEdgeConnecting(nodes[type], nodes[towards]) &&
-                                (graph.edgeConnecting(nodes[type], nodes[towards]).get().type == RelationshipType.Generalization ||
-                                graph.edgeConnecting(nodes[type], nodes[towards]).get().type == RelationshipType.Realization)))
-                    handleCreatingRelationships(towards, type, graph, RelationshipType.Association)
+                if (!nodes[towards]) {
+                    nodes[towards] = factory.createNode(towards)
+                    graph.addNode(nodes[towards])
+                }
+                method(graph, type, towards, RelationshipType.Association)
             }
             type.getAssociatedFrom().each { from ->
-                if (!nodes[type] || !nodes[from] || !graph.hasEdgeConnecting(nodes[from], nodes[type]) ||
-                        (graph.hasEdgeConnecting(nodes[from], nodes[type]) &&
-                                (graph.edgeConnecting(nodes[from], nodes[type]).get().type == RelationshipType.Generalization ||
-                                        graph.edgeConnecting(nodes[from], nodes[type]).get().type == RelationshipType.Realization)))
-                    handleCreatingRelationships(type, from, graph, RelationshipType.Association)
+                if (!nodes[from]) {
+                    nodes[from] = factory.createNode(from)
+                    graph.addNode(nodes[from])
+                }
+                method(graph, from, type, RelationshipType.Association)
             }
             type.getAggregatedTo().each { towards ->
-                if (!nodes[type] || !nodes[towards] || !graph.hasEdgeConnecting(nodes[type], nodes[towards]) ||
-                        (graph.hasEdgeConnecting(nodes[type], nodes[towards]) &&
-                                (graph.edgeConnecting(nodes[type], nodes[towards]).get().type == RelationshipType.Generalization ||
-                                        graph.edgeConnecting(nodes[type], nodes[towards]).get().type == RelationshipType.Realization)))
-                    handleCreatingRelationships(towards, type, graph, RelationshipType.Aggregation)
+                if (!nodes[towards]) {
+                    nodes[towards] = factory.createNode(towards)
+                    graph.addNode(nodes[towards])
+                }
+                method(graph, type, towards, RelationshipType.Aggregation)
             }
             type.getAggregatedFrom().each { from ->
-                if (!nodes[type] || !nodes[from] || !graph.hasEdgeConnecting(nodes[from], nodes[type]) ||
-                        (graph.hasEdgeConnecting(nodes[from], nodes[type]) &&
-                                (graph.edgeConnecting(nodes[from], nodes[type]).get().type == RelationshipType.Generalization ||
-                                        graph.edgeConnecting(nodes[from], nodes[type]).get().type == RelationshipType.Realization)))
-                    handleCreatingRelationships(type, from, graph, RelationshipType.Aggregation)
+                if (!nodes[from]) {
+                    nodes[from] = factory.createNode(from)
+                    graph.addNode(nodes[from])
+                }
+                method(graph, from, type, RelationshipType.Aggregation)
             }
             type.getComposedTo().each { towards ->
-                if (!nodes[type] || !nodes[towards] || !graph.hasEdgeConnecting(nodes[type], nodes[towards]) ||
-                        (graph.hasEdgeConnecting(nodes[type], nodes[towards]) &&
-                                (graph.edgeConnecting(nodes[type], nodes[towards]).get().type == RelationshipType.Generalization ||
-                                        graph.edgeConnecting(nodes[type], nodes[towards]).get().type == RelationshipType.Realization)))
-                    handleCreatingRelationships(towards, type, graph, RelationshipType.Composition)
+                if (!nodes[towards]) {
+                    nodes[towards] = factory.createNode(towards)
+                    graph.addNode(nodes[towards])
+                }
+                method(graph, type, towards, RelationshipType.Composition)
             }
             type.getComposedFrom().each { from ->
-                if (!nodes[type] || !nodes[from] || !graph.hasEdgeConnecting(nodes[from], nodes[type]) ||
-                        (graph.hasEdgeConnecting(nodes[from], nodes[type]) &&
-                                (graph.edgeConnecting(nodes[from], nodes[type]).get().type == RelationshipType.Generalization ||
-                                        graph.edgeConnecting(nodes[from], nodes[type]).get().type == RelationshipType.Realization)))
-                    handleCreatingRelationships(type, from, graph, RelationshipType.Composition)
+                if (!nodes[from]) {
+                    nodes[from] = factory.createNode(from)
+                    graph.addNode(nodes[from])
+                }
+                method(graph, from, type, RelationshipType.Composition)
             }
         }
 
         graph
+    }
+
+    def method(MutableNetwork<Node, Relationship> graph, from, towards, relType) {
+        if (!nodes[from] || !nodes[towards] || !graph.hasEdgeConnecting(nodes[from], nodes[towards]) ||
+                (graph.hasEdgeConnecting(nodes[from], nodes[towards]) &&
+                        (hasEdgeConnectingWithType(graph.edgesConnecting(nodes[from], nodes[towards]), RelationshipType.Generalization) ||
+                                (hasEdgeConnectingWithType(graph.edgesConnecting(nodes[from], nodes[towards]), RelationshipType.Realization)))))
+            handleCreatingRelationships(towards, from, graph, relType)
+    }
+
+    def hasEdgeConnectingWithType(Set<Relationship> set, RelationshipType type) {
+        return !set.findAll { it.type == type }.isEmpty()
     }
 
     protected void handleCreatingRelationships(Type towards, Type type, MutableNetwork<Node, Relationship> graph, RelationshipType reltype) {
@@ -222,14 +249,22 @@ class ModularGrimeDetector extends AbstractGrimeDetector {
             throw new IllegalArgumentException()
 
         Map<edu.montana.gsoc.msusel.rbml.model.Role, List<Type>> bindings = [:]
+        println("Number of Bindings: ${pattern.getRoleBindings().size()}")
         pattern.getRoleBindings().each { RoleBinding rb ->
             Reference ref = rb.getReference()
             if (ref.type == RefType.TYPE) {
                 edu.montana.gsoc.msusel.rbml.model.Role role = sps.findTypeRoleByName(rb.getRole().getName())
-                if (bindings[role])
-                    bindings[role] << findType(ref)
-                else
-                    bindings[role] = [findType(ref)]
+                if (bindings[role]) {
+                    Type t = findType(ref)
+                    println("Bound Type: $t")
+                    if (t)
+                        bindings[role] << t
+                } else {
+                    Type t = findType(ref)
+                    println("Bound Type: $t")
+                    if (t)
+                        bindings[role] = [t]
+                }
             }
         }
 
@@ -237,8 +272,9 @@ class ModularGrimeDetector extends AbstractGrimeDetector {
     }
 
     protected void validateRoleMatchingRelationships(Network<Node, Relationship> graph, SPS sps, Map<edu.montana.gsoc.msusel.rbml.model.Role, List<Type>> bindings) {
-        if (!graph || !sps || !bindings)
+        if (!graph || !sps || bindings == null) {
             throw new IllegalArgumentException()
+        }
 
         sps.relations.each { edu.montana.gsoc.msusel.rbml.model.Role r ->
             edu.montana.gsoc.msusel.rbml.model.Relationship rel = (edu.montana.gsoc.msusel.rbml.model.Relationship) r
@@ -246,12 +282,14 @@ class ModularGrimeDetector extends AbstractGrimeDetector {
             edu.montana.gsoc.msusel.rbml.model.Role src = rel.source()
             edu.montana.gsoc.msusel.rbml.model.Role dest = rel.dest()
 
-            bindings[src].each { s ->
-                bindings[dest].each { d ->
-                    Relationship edge = graph.edgesConnecting(nodes[s], nodes[d]).find { relationMatch(rel, it) }
-                    if (edge) {
-                        edge.marked = true
-                        edge.invalid = false
+            if (bindings[src] && bindings[dest]) {
+                bindings[src].each { s ->
+                    bindings[dest].each { d ->
+                        Relationship edge = graph.edgesConnecting(nodes[s], nodes[d]).find { relationMatch(rel, it) }
+                        if (edge) {
+                            edge.marked = true
+                            edge.invalid = false
+                        }
                     }
                 }
             }
@@ -259,31 +297,34 @@ class ModularGrimeDetector extends AbstractGrimeDetector {
     }
 
     protected void markValidOrInvalidGenHierRelationships(Network<Node, Relationship> graph, SPS sps, Map<edu.montana.gsoc.msusel.rbml.model.Role, List<Type>> bindings) {
-        if (!graph || !sps || !bindings)
+        if (!graph || !sps || bindings == null)
             throw new IllegalArgumentException()
 
-        sps.genHierarchies.each { r ->
-            GeneralizationHierarchy gh = (GeneralizationHierarchy) r
-            def classes = gh.children.findAll { it instanceof ClassRole }
-            def classifiers = gh.children.findAll { it instanceof edu.montana.gsoc.msusel.rbml.model.Classifier && !(it instanceof ClassRole)}
+        if (!bindings) {
+            sps.genHierarchies.each { r ->
+                GeneralizationHierarchy gh = (GeneralizationHierarchy) r
+                def classes = gh.children.findAll { it instanceof ClassRole }
+                def classifiers = gh.children.findAll { it instanceof edu.montana.gsoc.msusel.rbml.model.Classifier && !(it instanceof ClassRole) }
 
-            List<Type> classBindings = []
-            List<Type> classifierBindings = []
+                List<Type> classBindings = []
+                List<Type> classifierBindings = []
 
-            classifiers.each { classifierBindings += bindings[it] }
-            classes.each { classBindings += bindings[it] }
+                classifiers.each { if (bindings[it]) classifierBindings += bindings[it] }
+                classes.each { if (bindings[it]) classBindings += bindings[it] }
 
-            validateCorrectInheritanceRelations(graph, classifierBindings, classBindings)
-            invalidateSuperToSubtypeRelations(graph, classifierBindings, classBindings)
-            invalidateUnmarkedIncomingInheritanceRelations(graph, classifierBindings)
-            invalidateUnmarkedIncomingInheritanceRelations(graph, classBindings)
-            invalidateUnmarkedIncomingRelations(graph, classBindings)
+                validateCorrectInheritanceRelations(graph, classifierBindings, classBindings)
+                invalidateSuperToSubtypeRelations(graph, classifierBindings, classBindings)
+                invalidateUnmarkedIncomingInheritanceRelations(graph, classifierBindings)
+                invalidateUnmarkedIncomingInheritanceRelations(graph, classBindings)
+                invalidateUnmarkedIncomingRelations(graph, classBindings)
+            }
         }
     }
 
     protected void validateCorrectInheritanceRelations(Network<Node, Relationship> graph, List<Type> superTypes, List<Type> subTypes) {
-        if (graph == null || !superTypes || !subTypes)
-            throw new IllegalArgumentException()
+        if (graph == null || superTypes == null || subTypes == null) {
+            throw new IllegalArgumentException("graph, supertypes, or subtypes cannot be null")
+        }
 
         superTypes.each { cl ->
             subTypes.each { cls ->
@@ -302,8 +343,8 @@ class ModularGrimeDetector extends AbstractGrimeDetector {
     }
 
     protected void invalidateSuperToSubtypeRelations(Network<Node, Relationship> graph, List<Type> superTypes, List<Type> subTypes) {
-        if (graph == null || !superTypes || !subTypes)
-            throw new IllegalArgumentException()
+        if (graph == null || superTypes == null || subTypes == null)
+            throw new IllegalArgumentException("Graph, superTypes, or subTypes cannot be null")
 
         superTypes.each { cl ->
             subTypes.each { cls ->
@@ -316,8 +357,8 @@ class ModularGrimeDetector extends AbstractGrimeDetector {
     }
 
     protected void invalidateUnmarkedIncomingInheritanceRelations(Network<Node, Relationship> graph, List<Type> types) {
-        if (graph == null || !types)
-            throw new IllegalArgumentException()
+        if (graph == null || types == null)
+            throw new IllegalArgumentException("graph and types cannot be null")
 
         types.each {
             graph.inEdges(nodes[it]).findAll { (it.type == RelationshipType.Realization || it.type == RelationshipType.Generalization) && !it.marked }.each {
@@ -328,8 +369,8 @@ class ModularGrimeDetector extends AbstractGrimeDetector {
     }
 
     protected void invalidateUnmarkedIncomingRelations(Network<Node, Relationship> graph, List<Type> types) {
-        if (graph == null || !types)
-            throw new IllegalArgumentException()
+        if (graph == null || types == null)
+            throw new IllegalArgumentException("graph and types cannot be null")
 
         types.each {
             graph.inEdges(nodes[it]).findAll { !(it.type == RelationshipType.Realization || it.type == RelationshipType.Generalization) && !it.marked }.each {
@@ -387,14 +428,14 @@ class ModularGrimeDetector extends AbstractGrimeDetector {
         }
     }
 
-    /**
-     * Calculates the afferent coupling of the pattern instance defined by the provided graph. Where, afferent coupling
-     * is the number of classes outside (external to the pattern instance) that depend on classes within the pattern instance
-     * (those fitting a role of the pattern).
-     * @param graph Graph representing the pattern instance.
-     * @param rel a relationship to exclude from the calculation, if null then the actual Ca is calculated
-     * @return Measure for the afferent coupling
-     */
+/**
+ * Calculates the afferent coupling of the pattern instance defined by the provided graph. Where, afferent coupling
+ * is the number of classes outside (external to the pattern instance) that depend on classes within the pattern instance
+ * (those fitting a role of the pattern).
+ * @param graph Graph representing the pattern instance.
+ * @param rel a relationship to exclude from the calculation, if null then the actual Ca is calculated
+ * @return Measure for the afferent coupling
+ */
     protected int afferentCoupling(Network<Node, Relationship> graph, Relationship rel) {
         if (graph == null)
             throw new IllegalArgumentException()
@@ -409,9 +450,9 @@ class ModularGrimeDetector extends AbstractGrimeDetector {
             graph.successors(type).each { outgoing ->
                 // 4.      if r is internal to the pattern
                 if (outgoing.internal) {
-                    Optional<Relationship> opt = graph.edgeConnecting(type, outgoing)
-                    if (opt.present) {
-                        if (opt.get() != rel)
+                    Set<Relationship> set = graph.edgesConnecting(type, outgoing)
+                    set.each {
+                        if (it != rel)
                             ca += 1
                     }
                 }
@@ -444,9 +485,9 @@ class ModularGrimeDetector extends AbstractGrimeDetector {
             graph.successors(type).each { incoming ->
                 // 4.      if r is not internal to the pattern, then
                 if (!incoming.internal) {
-                    Optional<Relationship> opt = graph.edgeConnecting(type, incoming)
-                    if (opt.present) {
-                        if (opt.get() != rel)
+                    Set<Relationship> set = graph.edgesConnecting(type, incoming)
+                    set.each {
+                        if (it != rel)
                             ce += 1
                     }
                 }
@@ -458,11 +499,11 @@ class ModularGrimeDetector extends AbstractGrimeDetector {
         ce
     }
 
-    /**
-     * This method detects grime instances
-     * @param graph
-     * @return
-     */
+/**
+ * This method detects grime instances
+ * @param graph
+ * @return
+ */
     @Override
     List<Finding> detectGrime(Network<Node, Relationship> graph) {
         if (graph == null)
@@ -523,4 +564,5 @@ class ModularGrimeDetector extends AbstractGrimeDetector {
 
         findings
     }
+
 }
