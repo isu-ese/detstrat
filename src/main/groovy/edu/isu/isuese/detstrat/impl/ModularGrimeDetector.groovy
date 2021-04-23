@@ -249,19 +249,16 @@ class ModularGrimeDetector extends AbstractGrimeDetector {
             throw new IllegalArgumentException()
 
         Map<edu.montana.gsoc.msusel.rbml.model.Role, List<Type>> bindings = [:]
-        println("Number of Bindings: ${pattern.getRoleBindings().size()}")
         pattern.getRoleBindings().each { RoleBinding rb ->
             Reference ref = rb.getReference()
             if (ref.type == RefType.TYPE) {
                 edu.montana.gsoc.msusel.rbml.model.Role role = sps.findTypeRoleByName(rb.getRole().getName())
                 if (bindings[role]) {
                     Type t = findType(ref)
-                    println("Bound Type: $t")
                     if (t)
                         bindings[role] << t
                 } else {
                     Type t = findType(ref)
-                    println("Bound Type: $t")
                     if (t)
                         bindings[role] = [t]
                 }
@@ -328,12 +325,6 @@ class ModularGrimeDetector extends AbstractGrimeDetector {
 
         superTypes.each { cl ->
             subTypes.each { cls ->
-                println("Nodes[cls]: ${nodes[cls]}")
-                println("Nodes[cl]: ${nodes[cl]}")
-                println("Nodes contains cls: ${nodes.containsKey(cls)}")
-                println("Nodes contains cl: ${nodes.containsKey(cl)}")
-                println("CLS: ${cls}")
-                println("CL: ${cl}")
                 graph.edgesConnecting(nodes[cls], nodes[cl]).findAll { !it.marked && (it.type == RelationshipType.Generalization || it.type == RelationshipType.Realization) }.each {
                     it.marked = true
                     it.invalid = false
@@ -416,7 +407,6 @@ class ModularGrimeDetector extends AbstractGrimeDetector {
         int baseCe = efferentCoupling(graph, null)
         // foreach relationship, r, in graph do
         graph.edges().each { edge ->
-            println "edge: $edge"
             // 1. calculate Ca withholding the relationship
             int dCa = baseCa - afferentCoupling(graph, edge)
             // 2. calculate Ce withholding the relationship

@@ -103,7 +103,6 @@ class ClassGrimeDetector extends AbstractGrimeDetector {
         // Once this is done then create the direct connections via getFieldsUsedSameClass
         // Then setup indirect field uses (via get/set) using getMethodsUsedSameClass filtered on get/set/is/has
 
-        println "Methods: ${c.getMethods().size()}"
         c.getMethods().each { Method m ->
             GraphElementFactory factory = GraphElementFactory.instance
 
@@ -111,12 +110,10 @@ class ClassGrimeDetector extends AbstractGrimeDetector {
                 Node n = factory.createNode(m)
                 methodBiMap[m] = n
 
-                println "${m.getName()} has ${m.getFieldsUsedSameClass().size()} fields used in same class"
                 m.getFieldsUsedSameClass().each { Field x ->
                     connectMethodToField(x, factory, graph, n, false)
                 }
 
-                println "${m.getName()} has ${m.getMethodsUsedSameClass().size()} methods called in same class"
                 m.getMethodsUsedSameClass().findAll(findGetterSetters).each { Method z ->
                     z.getFieldsUsedSameClass().each { Field x ->
                         connectMethodToField(x, factory, graph, n, true)
@@ -325,8 +322,6 @@ class ClassGrimeDetector extends AbstractGrimeDetector {
                         ndc += 1
                 } else if (excludedPair) {
                     EndpointPair<Node> ep = graph.incidentNodes(it)
-                    println "src: " + ep.source().name + " type: " + ep.source().type
-                    println "target: " + ep.target().name + " type: " + ep.target().type
                     if (ep.source() == excludedPair.left && graph.predecessors(ep.target()).contains(excludedPair.right))
                         ndc += 0
                     else if (ep.source() == excludedPair.right && graph.predecessors(ep.target()).contains(excludedPair.left))
@@ -339,8 +334,6 @@ class ClassGrimeDetector extends AbstractGrimeDetector {
             }
         }
 
-        println "NDC: $ndc"
-        println "NP: $np"
         (double) ndc / np
     }
 
@@ -371,8 +364,6 @@ class ClassGrimeDetector extends AbstractGrimeDetector {
                     ci += 1
             } else if (excludedPair) {
                 EndpointPair<Node> ep = graph.incidentNodes(it)
-                println "src: " + ep.source().name + " type: " + ep.source().type
-                println "target: " + ep.target().name + " type: " + ep.target().type
                 if (ep.source() == excludedPair.left && graph.predecessors(ep.target()).contains(excludedPair.right))
                     ci += 0
                 else if (ep.source() == excludedPair.right && graph.predecessors(ep.target()).contains(excludedPair.left))
@@ -384,8 +375,6 @@ class ClassGrimeDetector extends AbstractGrimeDetector {
             }
         }
 
-        println "CI: $ci"
-        println "Max: $max"
         (double) ci / max
     }
 

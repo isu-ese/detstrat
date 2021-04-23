@@ -28,11 +28,13 @@ package edu.isu.isuese.detstrat.impl
 import edu.isu.isuese.datamodel.*
 import edu.montana.gsoc.msusel.rbml.PatternLoader
 import edu.montana.gsoc.msusel.rbml.model.SPS
+import groovy.util.logging.Log4j2
 
 /**
  * @author Isaac Griffith
  * @version 1.3.0
  */
+@Log4j2
 abstract class AbstractGrimeDetector implements GrimeDetector {
 
     Finding createFinding(String name, Reference ref) {
@@ -54,7 +56,7 @@ abstract class AbstractGrimeDetector implements GrimeDetector {
         if (!inst)
             throw new IllegalArgumentException()
 
-        println "Finding of $name on ${inst.getInstKey()}"
+        log.info "Finding of $name on ${inst.getInstKey()}"
         if (RuleProvider.instance.getRule(name))
             Finding.of(RuleProvider.instance.getRule(name).getKey()).on(inst)
         else
@@ -67,7 +69,7 @@ abstract class AbstractGrimeDetector implements GrimeDetector {
         if (!ns)
             throw new IllegalArgumentException()
 
-        println "Finding of $name on ${ns.getNsKey()}"
+        log.info "Finding of $name on ${ns.getNsKey()}"
         if (RuleProvider.instance.getRule(name))
             Finding.of(RuleProvider.instance.getRule(name).getKey()).on(ns)
         else
@@ -80,7 +82,7 @@ abstract class AbstractGrimeDetector implements GrimeDetector {
         if (!comp)
             throw new IllegalArgumentException()
 
-        println "Finding of $name on ${comp.getCompKey()}"
+        log.info "Finding of $name on ${comp.getCompKey()}"
         if (RuleProvider.instance.getRule(name))
             Finding.of(RuleProvider.instance.getRule(name).getKey()).on(comp)
         else

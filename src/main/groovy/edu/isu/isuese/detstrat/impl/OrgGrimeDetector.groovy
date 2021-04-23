@@ -225,11 +225,6 @@ class OrgGrimeDetector extends AbstractGrimeDetector {
             (baseSrcCycDQ, newSrcCycDQ) = measureCycleQuality(src, rel)
             (baseDestCycDQ, newDestCycDQ) = measureCycleQuality(dest, rel)
 
-            println "baseSrcCycDQ: $baseSrcCycDQ"
-            println "newSrcCycDQ: $newSrcCycDQ"
-            println "baseDestCycDQ: $baseDestCycDQ"
-            println "newDestCycDQ: $newDestCycDQ"
-
             return (baseSrcCycDQ - newSrcCycDQ) < 0 || (baseDestCycDQ - newDestCycDQ) < 0
         }
 
@@ -651,7 +646,6 @@ class OrgGrimeDetector extends AbstractGrimeDetector {
 
     def measureNc() {
         nsGraph.nodes().each { Node p ->
-            println "P: ${p.name}"
             int nc = nsTypeMap.get(p).size()
             nsMetrics.put(p, "Nc", nc)
         }
