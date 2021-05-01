@@ -251,7 +251,7 @@ class ModularGrimeDetector extends AbstractGrimeDetector {
         Map<edu.montana.gsoc.msusel.rbml.model.Role, List<Type>> bindings = [:]
         pattern.getRoleBindings().each { RoleBinding rb ->
             Reference ref = rb.getReference()
-            if (ref.type == RefType.TYPE) {
+            if (ref != null && ref.type == RefType.TYPE) {
                 edu.montana.gsoc.msusel.rbml.model.Role role = sps.findTypeRoleByName(rb.getRole().getName())
                 if (bindings[role]) {
                     Type t = findType(ref)

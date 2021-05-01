@@ -151,11 +151,11 @@ class ClassGrimeDetector extends AbstractGrimeDetector {
         // else mark method m as external
 
         List<RoleBinding> bindings = inst.roleBindings.findAll() { RoleBinding rb ->
-            rb.getReference().getType() == RefType.METHOD
+            rb.getReference()?.getType() == RefType.METHOD
         }
 
         bindings.each { RoleBinding rb ->
-            String refKey = rb.getReference().getRefKey()
+            String refKey = rb.getReference() != null ? rb.getReference().getRefKey() : ""
             methodBiMap.keySet().findAll { Method m -> m.getRefKey() == refKey }.each { Method m ->
                 methodBiMap[m].internal = true
             }
