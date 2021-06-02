@@ -304,32 +304,41 @@ create table methods_measures
     updated_at NUMERIC
 );
 
-create table classes_measures
+create table types_measures
 (
     id         INTEGER NOT NULL PRIMARY KEY Autoincrement,
-    class_id   INTEGER REFERENCES classes (id),
+    type_id   INTEGER REFERENCES types (id),
     measure_id INTEGER REFERENCES measures (id),
     created_at NUMERIC,
     updated_at NUMERIC
 );
 
-create table enums_measures
-(
-    id         INTEGER NOT NULL PRIMARY KEY Autoincrement,
-    enum_id    INTEGER REFERENCES enums (id),
-    measure_id INTEGER REFERENCES measures (id),
-    created_at NUMERIC,
-    updated_at NUMERIC
-);
+-- create table classes_measures
+-- (
+--     id         INTEGER NOT NULL PRIMARY KEY Autoincrement,
+--     class_id   INTEGER REFERENCES classes (id),
+--     measure_id INTEGER REFERENCES measures (id),
+--     created_at NUMERIC,
+--     updated_at NUMERIC
+-- );
 
-create table interfaces_measures
-(
-    id           INTEGER NOT NULL PRIMARY KEY Autoincrement,
-    interface_id INTEGER REFERENCES interfaces (id),
-    measure_id   INTEGER REFERENCES measures (id),
-    created_at   NUMERIC,
-    updated_at   NUMERIC
-);
+-- create table enums_measures
+-- (
+--     id         INTEGER NOT NULL PRIMARY KEY Autoincrement,
+--     enum_id    INTEGER REFERENCES enums (id),
+--     measure_id INTEGER REFERENCES measures (id),
+--     created_at NUMERIC,
+--     updated_at NUMERIC
+-- );
+
+-- create table interfaces_measures
+-- (
+--     id           INTEGER NOT NULL PRIMARY KEY Autoincrement,
+--     interface_id INTEGER REFERENCES interfaces (id),
+--     measure_id   INTEGER REFERENCES measures (id),
+--     created_at   NUMERIC,
+--     updated_at   NUMERIC
+-- );
 
 create table constructors_measures
 (
@@ -478,21 +487,21 @@ create table files_imports
     updated_at NUMERIC
 );
 
-create table unknown_types
-(
-    id               INTEGER NOT NULL PRIMARY KEY Autoincrement,
-    start            INTEGER,
-    end              INTEGER,
-    compKey          VARCHAR UNIQUE,
-    name             VARCHAR,
-    accessibility    INTEGER,
-    qualified_name   VARCHAR,
-    project_id       INTEGER REFERENCES projects (id),
-    created_at       NUMERIC,
-    updated_at       NUMERIC
-);
+-- create table unknown_types
+-- (
+--     id               INTEGER NOT NULL PRIMARY KEY Autoincrement,
+--     start            INTEGER,
+--     end              INTEGER,
+--     compKey          VARCHAR UNIQUE,
+--     name             VARCHAR,
+--     accessibility    INTEGER,
+--     qualified_name   VARCHAR,
+--     project_id       INTEGER REFERENCES projects (id),
+--     created_at       NUMERIC,
+--     updated_at       NUMERIC
+-- );
 
-create table classes
+create table types
 (
     id               INTEGER NOT NULL PRIMARY KEY Autoincrement,
     start            INTEGER,
@@ -501,7 +510,9 @@ create table classes
     name             VARCHAR,
     abstract         INTEGER,
     accessibility    INTEGER,
-    qualified_name    VARCHAR,
+    qualified_name   VARCHAR,
+    type             INTEGER,
+    updated          BOOLEAN,
     namespace_id     INTEGER REFERENCES namespaces (id),
     parent_type_id   INTEGER,
     parent_type_type VARCHAR,
@@ -510,39 +521,67 @@ create table classes
     updated_at       NUMERIC
 );
 
-create table enums
+create table projects_unknowntypes
 (
-    id               INTEGER NOT NULL PRIMARY KEY Autoincrement,
-    start            INTEGER,
-    end              INTEGER,
-    compKey          VARCHAR UNIQUE,
-    name             VARCHAR,
-    accessibility    INTEGER,
-    qualified_name   VARCHAR,
-    namespace_id     INTEGER REFERENCES namespaces (id),
-    parent_type_id   INTEGER,
-    parent_type_type VARCHAR,
-    parent_file_id   INTEGER,
-    created_at       NUMERIC,
-    updated_at       NUMERIC
+    id          INTEGER NOT NULL PRIMARY KEY Autoincrement,
+    project_id  INTEGER REFERENCES projects (id),
+    type_id     INTEGER REFERENCES types (id),
+    created_at  NUMERIC,
+    updated_at  NUMERIC
 );
 
-create table interfaces
-(
-    id               INTEGER NOT NULL PRIMARY KEY Autoincrement,
-    start            INTEGER,
-    end              INTEGER,
-    compKey          VARCHAR UNIQUE,
-    name             VARCHAR,
-    accessibility    INTEGER,
-    qualified_name   VARCHAR,
-    namespace_id     INTEGER REFERENCES namespaces (id),
-    parent_type_id   INTEGER,
-    parent_type_type VARCHAR,
-    parent_file_id   INTEGER,
-    created_at       NUMERIC,
-    updated_at       NUMERIC
-);
+
+-- create table classes
+-- (
+--     id               INTEGER NOT NULL PRIMARY KEY Autoincrement,
+--     start            INTEGER,
+--     end              INTEGER,
+--     compKey          VARCHAR UNIQUE,
+--     name             VARCHAR,
+--     abstract         INTEGER,
+--     accessibility    INTEGER,
+--     qualified_name    VARCHAR,
+--     namespace_id     INTEGER REFERENCES namespaces (id),
+--     parent_type_id   INTEGER,
+--     parent_type_type VARCHAR,
+--     parent_file_id   INTEGER,
+--     created_at       NUMERIC,
+--     updated_at       NUMERIC
+-- );
+
+-- create table enums
+-- (
+--     id               INTEGER NOT NULL PRIMARY KEY Autoincrement,
+--     start            INTEGER,
+--     end              INTEGER,
+--     compKey          VARCHAR UNIQUE,
+--     name             VARCHAR,
+--     accessibility    INTEGER,
+--     qualified_name   VARCHAR,
+--     namespace_id     INTEGER REFERENCES namespaces (id),
+--     parent_type_id   INTEGER,
+--     parent_type_type VARCHAR,
+--     parent_file_id   INTEGER,
+--     created_at       NUMERIC,
+--     updated_at       NUMERIC
+-- );
+
+-- create table interfaces
+-- (
+--     id               INTEGER NOT NULL PRIMARY KEY Autoincrement,
+--     start            INTEGER,
+--     end              INTEGER,
+--     compKey          VARCHAR UNIQUE,
+--     name             VARCHAR,
+--     accessibility    INTEGER,
+--     qualified_name   VARCHAR,
+--     namespace_id     INTEGER REFERENCES namespaces (id),
+--     parent_type_id   INTEGER,
+--     parent_type_type VARCHAR,
+--     parent_file_id   INTEGER,
+--     created_at       NUMERIC,
+--     updated_at       NUMERIC
+-- );
 
 create table literals
 (
@@ -552,8 +591,7 @@ create table literals
     compKey       VARCHAR UNIQUE,
     name          VARCHAR,
     accessibility INTEGER,
-    parent_id     INTEGER,
-    parent_type   VARCHAR,
+    type_id       INTEGER REFERENCES types (id),
     created_at    NUMERIC,
     updated_at    NUMERIC
 );
@@ -568,8 +606,7 @@ create table initializers
     localVars     INTEGER,
     cfg           VARCHAR,
     accessibility INTEGER,
-    parent_id     INTEGER,
-    parent_type   VARCHAR,
+    type_id       INTEGER REFERENCES types (id),
     number        INTEGER,
     instance      INTEGER(1), -- boolean
     created_at    NUMERIC,
@@ -584,8 +621,7 @@ create table fields
     compKey       VARCHAR UNIQUE,
     name          VARCHAR,
     accessibility INTEGER,
-    parent_id     INTEGER,
-    parent_type   VARCHAR,
+    type_id       INTEGER REFERENCES types (id),
     created_at    NUMERIC,
     updated_at    NUMERIC
 );
@@ -600,8 +636,7 @@ create table methods
     localVars     INTEGER,
     accessibility INTEGER,
     cfg           VARCHAR,
-    parent_id     INTEGER,
-    parent_type   VARCHAR,
+    type_id       INTEGER REFERENCES types (id),
     created_at    NUMERIC,
     updated_at    NUMERIC
 );
@@ -616,8 +651,7 @@ create table constructors
     localVars     INTEGER,
     cfg           VARCHAR,
     accessibility INTEGER,
-    parent_id     INTEGER,
-    parent_type   VARCHAR,
+    type_id       INTEGER REFERENCES types (id),
     created_at    NUMERIC,
     updated_at    NUMERIC
 );
@@ -632,8 +666,7 @@ create table destructors
     localVars     INTEGER,
     cfg           VARCHAR,
     accessibility INTEGER,
-    parent_id     INTEGER,
-    parent_type   VARCHAR,
+    type_id       INTEGER REFERENCES types (id),
     created_at    NUMERIC,
     updated_at    NUMERIC
 );
@@ -769,32 +802,41 @@ create table modifiers
     updated_at NUMERIC
 );
 
-create table classes_modifiers
+create table types_modifiers
 (
     id          INTEGER NOT NULL PRIMARY KEY Autoincrement,
-    class_id    INTEGER REFERENCES classes (id),
+    type_id    INTEGER REFERENCES types (id),
     modifier_id INTEGER REFERENCES modifiers (id),
     created_at  NUMERIC,
     updated_at  NUMERIC
 );
 
-create table enums_modifiers
-(
-    id          INTEGER NOT NULL PRIMARY KEY Autoincrement,
-    enum_id     INTEGER REFERENCES enums (id),
-    modifier_id INTEGER REFERENCES modifiers (id),
-    created_at  NUMERIC,
-    updated_at  NUMERIC
-);
+-- create table classes_modifiers
+-- (
+--     id          INTEGER NOT NULL PRIMARY KEY Autoincrement,
+--     class_id    INTEGER REFERENCES classes (id),
+--     modifier_id INTEGER REFERENCES modifiers (id),
+--     created_at  NUMERIC,
+--     updated_at  NUMERIC
+-- );
 
-create table interfaces_modifiers
-(
-    id           INTEGER NOT NULL PRIMARY KEY Autoincrement,
-    interface_id INTEGER REFERENCES interfaces (id),
-    modifier_id  INTEGER REFERENCES modifiers (id),
-    created_at   NUMERIC,
-    updated_at   NUMERIC
-);
+-- create table enums_modifiers
+-- (
+--     id          INTEGER NOT NULL PRIMARY KEY Autoincrement,
+--     enum_id     INTEGER REFERENCES enums (id),
+--     modifier_id INTEGER REFERENCES modifiers (id),
+--     created_at  NUMERIC,
+--     updated_at  NUMERIC
+-- );
+
+-- create table interfaces_modifiers
+-- (
+--     id           INTEGER NOT NULL PRIMARY KEY Autoincrement,
+--     interface_id INTEGER REFERENCES interfaces (id),
+--     modifier_id  INTEGER REFERENCES modifiers (id),
+--     created_at   NUMERIC,
+--     updated_at   NUMERIC
+-- );
 
 create table literals_modifiers
 (
@@ -912,32 +954,41 @@ create table fields_template_params
     updated_at        NUMERIC
 );
 
-create table interfaces_template_params
+create table types_template_params
 (
     id                INTEGER NOT NULL PRIMARY KEY Autoincrement,
-    interface_id      INTEGER REFERENCES interfaces (id),
+    type_id           INTEGER REFERENCES types (id),
     template_param_id INTEGER REFERENCES template_params (id),
     created_at        NUMERIC,
     updated_at        NUMERIC
 );
 
-create table classes_template_params
-(
-    id                INTEGER NOT NULL PRIMARY KEY Autoincrement,
-    class_id          INTEGER REFERENCES classes (id),
-    template_param_id INTEGER REFERENCES template_params (id),
-    created_at        NUMERIC,
-    updated_at        NUMERIC
-);
+-- create table interfaces_template_params
+-- (
+--     id                INTEGER NOT NULL PRIMARY KEY Autoincrement,
+--     interface_id      INTEGER REFERENCES interfaces (id),
+--     template_param_id INTEGER REFERENCES template_params (id),
+--     created_at        NUMERIC,
+--     updated_at        NUMERIC
+-- );
 
-create table enums_template_params
-(
-    id                INTEGER NOT NULL PRIMARY KEY Autoincrement,
-    enum_id           INTEGER REFERENCES enums (id),
-    template_param_id INTEGER REFERENCES template_params (id),
-    created_at        NUMERIC,
-    updated_at        NUMERIC
-);
+-- create table classes_template_params
+-- (
+--     id                INTEGER NOT NULL PRIMARY KEY Autoincrement,
+--     class_id          INTEGER REFERENCES classes (id),
+--     template_param_id INTEGER REFERENCES template_params (id),
+--     created_at        NUMERIC,
+--     updated_at        NUMERIC
+-- );
+
+-- create table enums_template_params
+-- (
+--     id                INTEGER NOT NULL PRIMARY KEY Autoincrement,
+--     enum_id           INTEGER REFERENCES enums (id),
+--     template_param_id INTEGER REFERENCES template_params (id),
+--     created_at        NUMERIC,
+--     updated_at        NUMERIC
+-- );
 
 insert into modifiers (name)
 values ('STATIC'),

@@ -50,9 +50,9 @@ class GraphElementFactoryTest extends DBSpec {
     void "test createNode with component happy paths"() {
         // given
         def params = [
-                [Class.builder().name("test").create(), NodeType.Class],
-                [Interface.builder().name("test").create(), NodeType.Class],
-                [Enum.builder().name("test").create(), NodeType.Class],
+                [Type.builder().type(Type.CLASS).name("test").create(), NodeType.Class],
+                [Type.builder().type(Type.INTERFACE).name("test").create(), NodeType.Class],
+                [Type.builder().type(Type.ENUM).name("test").create(), NodeType.Class],
                 [Initializer.builder().name("test").create(), NodeType.Method],
                 [Literal.builder().name("test").create(), NodeType.Attribute],
                 [Field.builder().name("test").create(), NodeType.Attribute],

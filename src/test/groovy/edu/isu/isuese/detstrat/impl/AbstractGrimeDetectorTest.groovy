@@ -25,7 +25,7 @@
  */
 package edu.isu.isuese.detstrat.impl
 
-import edu.isu.isuese.datamodel.Class
+
 import edu.isu.isuese.datamodel.Finding
 import edu.isu.isuese.datamodel.Pattern
 import edu.isu.isuese.datamodel.PatternInstance
@@ -56,7 +56,7 @@ class AbstractGrimeDetectorTest extends DBSpec {
     void "test createFinding happy path"() {
         // given
         String name = "TIG"
-        Reference ref = Class.builder().name("test").compKey("test").create().createReference()
+        Reference ref = Type.builder().type(Type.CLASS).name("test").compKey("test").create().createReference()
 
         // when
         Finding result = fixture.createFinding(name, ref)
@@ -70,7 +70,7 @@ class AbstractGrimeDetectorTest extends DBSpec {
     void "test createFinding unknown grime name"() {
         // given
         String name = "Other"
-        Reference ref = Class.builder().name("test").compKey("test").create().createReference()
+        Reference ref = Type.builder().type(Type.CLASS).name("test").compKey("test").create().createReference()
 
         // when
         Finding result = fixture.createFinding(name, ref)
@@ -83,7 +83,7 @@ class AbstractGrimeDetectorTest extends DBSpec {
     void "test createFinding null name"() {
         // given
         String name = null
-        Reference ref = Class.builder().name("test").compKey("test").create().createReference()
+        Reference ref = Type.builder().type(Type.CLASS).name("test").compKey("test").create().createReference()
 
         // when
         fixture.createFinding(name, ref)
@@ -93,7 +93,7 @@ class AbstractGrimeDetectorTest extends DBSpec {
     void "test createFinding empty name"() {
         // given
         String name = ""
-        Reference ref = Class.builder().name("test").compKey("test").create().createReference()
+        Reference ref = Type.builder().type(Type.CLASS).name("test").compKey("test").create().createReference()
 
         // when
         fixture.createFinding(name, ref)

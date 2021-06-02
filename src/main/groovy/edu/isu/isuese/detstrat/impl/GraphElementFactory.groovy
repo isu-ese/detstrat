@@ -40,9 +40,7 @@ class GraphElementFactory {
 
         NodeType type = null
         switch (comp) {
-            case Class:
-            case Interface:
-            case Enum:
+            case Type:
                 type = NodeType.Class
                 break
             case Literal:
