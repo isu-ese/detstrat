@@ -27,9 +27,9 @@
 create table systems
 (
     id         INTEGER NOT NULL PRIMARY KEY Auto_Increment,
-    name       VARCHAR(1024),
-    basePath   VARCHAR(1024),
-    sysKey     VARCHAR(1024),
+    name       TEXT,
+    basePath   TEXT,
+    sysKey     TEXT,
     created_at DATETIME,
     updated_at DATETIME
 );
@@ -37,8 +37,8 @@ create table systems
 create table pattern_repositories
 (
     id         INTEGER NOT NULL PRIMARY KEY Auto_Increment,
-    repoKey    VARCHAR(1024),
-    name       VARCHAR(1024),
+    repoKey    TEXT,
+    name       TEXT,
     created_at DATETIME,
     updated_at DATETIME
 );
@@ -46,9 +46,9 @@ create table pattern_repositories
 create table patterns
 (
     id                    INTEGER NOT NULL PRIMARY KEY Auto_Increment,
-    patternKey            VARCHAR(1024),
-    name                  VARCHAR(1024),
-    family                VARCHAR(1024),
+    patternKey            TEXT,
+    name                  TEXT,
+    family                TEXT,
     pattern_repository_id INTEGER REFERENCES pattern_repositories (id),
     created_at            DATETIME,
     updated_at            DATETIME
@@ -57,8 +57,8 @@ create table patterns
 create table roles
 (
     id         INTEGER NOT NULL PRIMARY KEY Auto_Increment,
-    roleKey    VARCHAR(1024),
-    name       VARCHAR(1024),
+    roleKey    TEXT,
+    name       TEXT,
     type       INTEGER,
     pattern_id INTEGER REFERENCES patterns (id),
     mandatory  BOOLEAN,
@@ -78,7 +78,7 @@ create table roles_role_bindings
 create table relations
 (
     id           INTEGER NOT NULL PRIMARY KEY Auto_Increment,
-    relKey       VARCHAR(1024),
+    relKey       TEXT,
     project_id   INTEGER,
     reference_id INTEGER,
     to_id        INTEGER,
@@ -91,7 +91,7 @@ create table relations
 create table pattern_chains
 (
     id         INTEGER NOT NULL PRIMARY KEY Auto_Increment,
-    chainKey   VARCHAR(1024),
+    chainKey   TEXT,
     system_id  INTEGER REFERENCES systems (id),
     created_at DATETIME,
     updated_at DATETIME
@@ -100,7 +100,7 @@ create table pattern_chains
 create table pattern_instances
 (
     id               INTEGER NOT NULL PRIMARY KEY Auto_Increment,
-    instKey          VARCHAR(1024),
+    instKey          TEXT,
     pattern_size     INTEGER,
     pattern_chain_id INTEGER REFERENCES pattern_chains (id),
     project_id       INTEGER REFERENCES projects (id),
@@ -120,10 +120,10 @@ create table role_bindings
 create table refs
 (
     id          INTEGER NOT NULL PRIMARY KEY Auto_Increment,
-    refKey      VARCHAR(1024),
+    refKey      TEXT,
     type        INTEGER,
     parent_id   INTEGER,
-    parent_type VARCHAR(1024),
+    parent_type TEXT,
     created_at  DATETIME,
     updated_at  DATETIME
 );
@@ -131,7 +131,7 @@ create table refs
 create table findings
 (
     id           INTEGER NOT NULL PRIMARY KEY Auto_Increment,
-    findingKey   VARCHAR(1024),
+    findingKey   TEXT,
     injected     BOOLEAN,
     start        INTEGER,
     end          INTEGER,
@@ -169,7 +169,7 @@ create table finding_data_points
 (
     id              INTEGER NOT NULL PRIMARY KEY Auto_Increment,
     finding_data_id INTEGER,
-    handle          VARCHAR(1024),
+    handle          TEXT,
     value           DOUBLE,
     created_at      DATETIME,
     updated_at      DATETIME
@@ -178,8 +178,8 @@ create table finding_data_points
 create table rules
 (
     id                 INTEGER NOT NULL PRIMARY KEY Auto_Increment,
-    ruleKey            VARCHAR(1024),
-    name               VARCHAR(1024),
+    ruleKey            TEXT,
+    name               TEXT,
     description        TEXT,
     priority           INTEGER,
     rule_repository_id INTEGER REFERENCES rule_repositories (id),
@@ -199,7 +199,7 @@ create table rules_tags
 create table tags
 (
     id         INTEGER NOT NULL PRIMARY KEY Auto_Increment,
-    tag        VARCHAR(1024),
+    tag        TEXT,
     created_at DATETIME,
     updated_at DATETIME
 );
@@ -207,8 +207,8 @@ create table tags
 create table rule_repositories
 (
     id         INTEGER NOT NULL PRIMARY KEY Auto_Increment,
-    repoKey    VARCHAR(1024),
-    name       VARCHAR(1024),
+    repoKey    TEXT,
+    name       TEXT,
     created_at DATETIME,
     updated_at DATETIME
 );
@@ -216,8 +216,8 @@ create table rule_repositories
 create table measures
 (
     id         INTEGER NOT NULL PRIMARY KEY Auto_Increment,
-    measureKey VARCHAR(1024),
-    metricKey  VARCHAR(1024),
+    measureKey TEXT,
+    metricKey  TEXT,
     value      DOUBLE,
     created_at DATETIME,
     updated_at DATETIME
@@ -334,11 +334,11 @@ create table destructors_measures
 create table metrics
 (
     id                   INTEGER NOT NULL PRIMARY KEY Auto_Increment,
-    metricKey            VARCHAR(1024),
-    name                 VARCHAR(1024),
+    metricKey            TEXT,
+    name                 TEXT,
     description          TEXT,
-    handle               VARCHAR(1024),
-    evaluator            VARCHAR(1024),
+    handle               TEXT,
+    evaluator            TEXT,
     metric_repository_id INTEGER REFERENCES metric_repositories (id),
     created_at           DATETIME,
     updated_at           DATETIME
@@ -347,9 +347,9 @@ create table metrics
 create table metric_repositories
 (
     id         INTEGER NOT NULL PRIMARY KEY Auto_Increment,
-    repoKey    VARCHAR(1024),
-    name       VARCHAR(1024),
-    toolName   VARCHAR(1024),
+    repoKey    TEXT,
+    name       TEXT,
+    toolName   TEXT,
     created_at DATETIME,
     updated_at DATETIME
 );
@@ -357,13 +357,13 @@ create table metric_repositories
 create table projects
 (
     id         INTEGER NOT NULL PRIMARY KEY Auto_Increment,
-    projKey    VARCHAR(1024),
-    name       VARCHAR(1024),
-    version    VARCHAR(1024),
-    relPath    VARCHAR(1024),
-    srcPath    VARCHAR(1024),
-    binPath    VARCHAR(1024),
-    testPath   VARCHAR(1024),
+    projKey    TEXT,
+    name       TEXT,
+    version    TEXT,
+    relPath    TEXT,
+    srcPath    TEXT,
+    binPath    TEXT,
+    testPath   TEXT,
     system_id  INTEGER REFERENCES systems (id),
     created_at DATETIME,
     updated_at DATETIME
@@ -372,7 +372,7 @@ create table projects
 create table languages
 (
     id         INTEGER NOT NULL PRIMARY KEY Auto_Increment,
-    name       VARCHAR(1024),
+    name       TEXT,
     created_at DATETIME,
     updated_at DATETIME
 );
@@ -389,9 +389,9 @@ create table projects_languages
 create table modules
 (
     id         INTEGER NOT NULL PRIMARY KEY Auto_Increment,
-    moduleKey  VARCHAR(1024),
-    name       VARCHAR(1024),
-    relPath    VARCHAR(1024),
+    moduleKey  TEXT,
+    name       TEXT,
+    relPath    TEXT,
     project_id INTEGER REFERENCES projects (id),
     created_at DATETIME,
     updated_at DATETIME
@@ -400,11 +400,11 @@ create table modules
 create table scms
 (
     id         INTEGER NOT NULL PRIMARY KEY Auto_Increment,
-    scmKey     VARCHAR(1024),
-    name       VARCHAR(1024),
-    tag        VARCHAR(1024),
-    branch     VARCHAR(1024),
-    url        VARCHAR(1024),
+    scmKey     TEXT,
+    name       TEXT,
+    tag        TEXT,
+    branch     TEXT,
+    url        TEXT,
     project_id INTEGER REFERENCES projects (id),
     type       INTEGER,
     created_at DATETIME,
@@ -414,10 +414,10 @@ create table scms
 create table namespaces
 (
     id            INTEGER NOT NULL PRIMARY KEY Auto_Increment,
-    nsKey         VARCHAR(1024),
-    name          VARCHAR(1024),
+    nsKey         TEXT,
+    name          TEXT,
     project_id    INTEGER REFERENCES projects (id),
-    relPath       VARCHAR(1024),
+    relPath       TEXT,
     parent_ns_id  INTEGER,
     parent_mod_id INTEGER,
     created_at    DATETIME,
@@ -427,11 +427,11 @@ create table namespaces
 create table files
 (
     id           INTEGER NOT NULL PRIMARY KEY Auto_Increment,
-    fileKey      VARCHAR(1024),
+    fileKey      TEXT,
     pathIndex    INTEGER NOT NULL,
-    name         VARCHAR(1024),
+    name         TEXT,
     type         INTEGER,
-    relPath      VARCHAR(1024),
+    relPath      TEXT,
     start        INTEGER,
     end          INTEGER,
     parseStage   INTEGER,
@@ -444,7 +444,7 @@ create table files
 create table imports
 (
     id         INTEGER NOT NULL PRIMARY KEY Auto_Increment,
-    name       VARCHAR(1024),
+    name       TEXT,
     start      INTEGER,
     end        INTEGER,
     created_at DATETIME,
@@ -465,16 +465,16 @@ create table types
     id               INTEGER NOT NULL PRIMARY KEY Auto_Increment,
     start            INTEGER,
     end              INTEGER,
-    compKey          VARCHAR(1024),
-    name             VARCHAR(1024),
+    compKey          TEXT,
+    name             TEXT,
     abstract         INTEGER,
     accessibility    INTEGER,
-    qualified_name   VARCHAR(1024),
+    qualified_name   TEXT,
     type             INTEGER,
     updated          BOOLEAN,
     namespace_id     INTEGER REFERENCES namespaces (id),
     parent_type_id   INTEGER,
-    parent_type_type VARCHAR(1024),
+    parent_type_type TEXT,
     parent_file_id   INTEGER,
     created_at       DATETIME,
     updated_at       DATETIME
@@ -494,8 +494,8 @@ create table literals
     id            INTEGER NOT NULL PRIMARY KEY Auto_Increment,
     start         INTEGER,
     end           INTEGER,
-    compKey       VARCHAR(1024),
-    name          VARCHAR(1024),
+    compKey       TEXT,
+    name          TEXT,
     accessibility INTEGER,
     type_id       INTEGER REFERENCES types (id),
     created_at    DATETIME,
@@ -504,19 +504,22 @@ create table literals
 
 create table initializers
 (
-    id            INTEGER NOT NULL PRIMARY KEY Auto_Increment,
-    start         INTEGER,
-    end           INTEGER,
-    compKey       VARCHAR(1024),
-    name          VARCHAR(1024),
-    localVars     INTEGER,
-    cfg           TEXT,
-    accessibility INTEGER,
-    type_id       INTEGER REFERENCES types (id),
-    number        INTEGER,
-    instance      BOOLEAN, -- boolean
-    created_at    DATETIME,
-    updated_at    DATETIME
+    id                INTEGER NOT NULL PRIMARY KEY Auto_Increment,
+    start             INTEGER,
+    end               INTEGER,
+    compKey           TEXT,
+    name              TEXT,
+    localVars         INTEGER,
+    returnStmts       INTEGER,
+    numStmts          INTEGER,
+    numDecisionPoints INTEGER,
+    cfg               TEXT,
+    accessibility     INTEGER,
+    type_id           INTEGER REFERENCES types (id),
+    number            INTEGER,
+    instance          BOOLEAN, -- boolean
+    created_at        DATETIME,
+    updated_at        DATETIME
 );
 
 create table fields
@@ -524,8 +527,8 @@ create table fields
     id            INTEGER NOT NULL PRIMARY KEY Auto_Increment,
     start         INTEGER,
     end           INTEGER,
-    compKey       VARCHAR(1024),
-    name          VARCHAR(1024),
+    compKey       TEXT,
+    name          TEXT,
     accessibility INTEGER,
     type_id       INTEGER REFERENCES types (id),
     created_at    DATETIME,
@@ -534,56 +537,65 @@ create table fields
 
 create table methods
 (
-    id            INTEGER NOT NULL PRIMARY KEY Auto_Increment,
-    start         INTEGER,
-    end           INTEGER,
-    compKey       VARCHAR(1024),
-    name          VARCHAR(1024),
-    localVars     INTEGER,
-    accessibility INTEGER,
-    cfg           TEXT,
-    type_id       INTEGER REFERENCES types (id),
-    created_at    DATETIME,
-    updated_at    DATETIME
+    id                INTEGER NOT NULL PRIMARY KEY Auto_Increment,
+    start             INTEGER,
+    end               INTEGER,
+    compKey           TEXT,
+    name              TEXT,
+    localVars         INTEGER,
+    returnStmts       INTEGER,
+    numStmts          INTEGER,
+    numDecisionPoints INTEGER,
+    accessibility     INTEGER,
+    cfg               TEXT,
+    type_id           INTEGER REFERENCES types (id),
+    created_at        DATETIME,
+    updated_at        DATETIME
 );
 
 create table constructors
 (
-    id            INTEGER NOT NULL PRIMARY KEY Auto_Increment,
-    start         INTEGER,
-    end           INTEGER,
-    compKey       VARCHAR(1024),
-    name          VARCHAR(1024),
-    localVars     INTEGER,
-    cfg           TEXT,
-    accessibility INTEGER,
-    type_id       INTEGER REFERENCES types (id),
-    created_at    DATETIME,
-    updated_at    DATETIME
+    id                INTEGER NOT NULL PRIMARY KEY Auto_Increment,
+    start             INTEGER,
+    end               INTEGER,
+    compKey           TEXT,
+    name              TEXT,
+    localVars         INTEGER,
+    returnStmts       INTEGER,
+    numStmts          INTEGER,
+    numDecisionPoints INTEGER,
+    cfg               TEXT,
+    accessibility     INTEGER,
+    type_id           INTEGER REFERENCES types (id),
+    created_at        DATETIME,
+    updated_at        DATETIME
 );
 
 create table destructors
 (
-    id            INTEGER NOT NULL PRIMARY KEY Auto_Increment,
-    start         INTEGER,
-    end           INTEGER,
-    compKey       VARCHAR(1024),
-    name          VARCHAR(1024),
-    localVars     INTEGER,
-    cfg           TEXT,
-    accessibility INTEGER,
-    type_id       INTEGER REFERENCES types (id),
-    created_at    DATETIME,
-    updated_at    DATETIME
+    id                INTEGER NOT NULL PRIMARY KEY Auto_Increment,
+    start             INTEGER,
+    end               INTEGER,
+    compKey           TEXT,
+    name              TEXT,
+    localVars         INTEGER,
+    returnStmts       INTEGER,
+    numStmts          INTEGER,
+    numDecisionPoints INTEGER,
+    cfg               TEXT,
+    accessibility     INTEGER,
+    type_id           INTEGER REFERENCES types (id),
+    created_at        DATETIME,
+    updated_at        DATETIME
 );
 
 create table parameters
 (
     id          INTEGER NOT NULL PRIMARY KEY Auto_Increment,
-    name        VARCHAR(1024),
+    name        TEXT,
     varg        INTEGER,
     parent_id   INTEGER,
-    parent_type VARCHAR(1024),
+    parent_type TEXT,
     created_at  DATETIME,
     updated_at  DATETIME
 );
@@ -591,9 +603,9 @@ create table parameters
 create table method_exceptions
 (
     id          INTEGER NOT NULL PRIMARY KEY Auto_Increment,
-    name        VARCHAR(1024),
+    name        TEXT,
     parent_id   INTEGER,
-    parent_type VARCHAR(1024),
+    parent_type TEXT,
     created_at  DATETIME,
     updated_at  DATETIME
 );
@@ -628,9 +640,9 @@ create table destructors_method_exceptions
 create table type_refs
 (
     id           INTEGER NOT NULL PRIMARY KEY Auto_Increment,
-    dimensions   VARCHAR(1024),
-    typeName     VARCHAR(1024),
-    typeFullName VARCHAR(1024),
+    dimensions   TEXT,
+    typeName     TEXT,
+    typeFullName TEXT,
     type         INTEGER,
     typeref_id   INTEGER REFERENCES type_refs (id),
     is_bound     BOOLEAN,
@@ -704,7 +716,7 @@ create table typerefs_typerefs
 create table modifiers
 (
     id         INTEGER NOT NULL PRIMARY KEY Auto_Increment,
-    name       VARCHAR(1024),
+    name       TEXT,
     created_at DATETIME,
     updated_at DATETIME
 );
@@ -784,7 +796,7 @@ create table parameters_modifiers
 create table template_params
 (
     id         INTEGER NOT NULL PRIMARY KEY Auto_Increment,
-    name       VARCHAR(1024),
+    name       TEXT,
     created_at DATETIME,
     updated_at DATETIME
 );
