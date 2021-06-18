@@ -59,7 +59,7 @@ class GrimeSizeEvaluator extends MetricEvaluator {
     }
 
     @Override
-    def measure(Measurable measurable) {
+    def measureValue(Measurable measurable) {
         int count = 0
 
         if (measurable instanceof PatternInstance) {
