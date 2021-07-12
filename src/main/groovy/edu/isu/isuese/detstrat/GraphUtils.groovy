@@ -46,8 +46,8 @@ class GraphUtils {
         MutableNetwork<Node, ? extends Relationship> spanningTree = NetworkBuilder.directed()
                 .allowsParallelEdges(true)
                 .allowsSelfLoops(true)
-                .expectedNodeCount(1000)
-                .expectedEdgeCount(10000)
+                .expectedNodeCount(network.nodes().size())
+                .expectedEdgeCount(network.edges().size())
                 .build()
 
         network.nodes().each {
@@ -131,7 +131,6 @@ class GraphUtils {
     def markCycles(Network<Node, ? extends Relationship> graph) {
         reorderNodes(graph)
         Queue<Path> que = Lists.newLinkedList()
-        List<Path> cycles = []
 
         // put all vertices v_1,v_2,...,v_n into que
         graph.nodes().each { Node n ->
@@ -148,26 +147,53 @@ class GraphUtils {
             // if (hasEdgeConnecting(v_t, v_h)) {
             if (graph.hasEdgeConnecting(p.tail(), p.head())) {
                 //     output P + e as a cycle
-                cycles << p
+                for (int i = 0; i < p.nodes.size() - 1; i++) {
+                    graph.edgeConnecting(p.nodes[i], p.nodes[i + 1]).get().cyclic = true
+                }
+                graph.edgeConnecting(p.tail(), p.head()).get().cyclic = true
             }
 
             // get an adjacent edge of the tail whose end does not occur in the open path and the order of
             // its end is greater than the order of the head. This edge and the k length open path construct
             // a new k + 1 length open path. Put this new open path into the queue
             graph.successors(p.tail()).each { Node n ->
-                if (!p.contains(n) && n.order > p.head().order) {
+                if (!p.nodes.contains(n) && n.order > p.head().order) {
                     Path x = new Path(p)
                     x << n
                     que.offer(x)
                 }
             }
         }
+    }
 
-        cycles.each { Path p ->
-            for (int i = 0; i < p.nodes.size() - 1; i++) {
-                graph.edgeConnecting(p.nodes[i], p.nodes[i + 1]).get().cyclic = true
+    def markCycles2(Network<Node, ? extends Relationship> graph) {
+        graph.nodes().each {
+            List<Node> visited = [it]
+            Node head = it
+            graph.successors(head).each {succ ->
+                Relationship rel = graph.edgeConnecting(head, succ).get()
+                if (!rel.cyclic) {
+                    recurseMarkCycle(graph, succ, visited, head)
+                }
             }
-            graph.edgeConnecting(p.tail(), p.head()).get().cyclic = true
+        }
+    }
+
+    def recurseMarkCycle(Network<Node, ? extends Relationship> graph, Node succ, List<Node> visited, Node head) {
+        if (succ == head) {
+            return true
+        } else {
+            visited << succ
+            Set<Node> successors = graph.successors(succ)
+            for (Node s : successors) {
+                if (!visited.contains(s) || s == head) {
+                    boolean cyclic = recurseMarkCycle(graph, s, visited, head)
+                    if (cyclic) {
+                        graph.edgeConnecting(succ, s).get().cyclic = true
+                        return true
+                    }
+                }
+            }
         }
     }
 }
