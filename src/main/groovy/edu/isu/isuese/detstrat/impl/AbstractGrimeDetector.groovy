@@ -43,7 +43,6 @@ abstract class AbstractGrimeDetector implements GrimeDetector {
         if (!ref)
             throw new IllegalArgumentException()
 
-        println "Finding of $name on ${ref.getRefKey()}"
         if (RuleProvider.instance.getRule(name))
             Finding.of(RuleProvider.instance.getRule(name).getKey()).on(ref)
         else
