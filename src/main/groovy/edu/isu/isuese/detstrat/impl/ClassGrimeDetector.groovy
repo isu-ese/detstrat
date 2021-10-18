@@ -60,24 +60,19 @@ class ClassGrimeDetector extends AbstractGrimeDetector {
         List<Finding> findings = Lists.newLinkedList()
 
         // 2. Mark each method as either internal or external
-        log.info "Marking Methods"
         markMethods(pattern)
 
         pattern.getTypes().each { Type type ->
             current = type
             // 1. Construct method-attribute bipartite graph
-            log.info "Constructing the graph"
             Network<Node, Relationship> graph = constructGraph(type)
 
             // 3. Mark each method pair as either internal or external
-            log.info "Marking Method Pairs"
             markMethodPairs(graph)
 
             // 4. Calculate delta-TCC and delta-RCI for each method and method pair
-            log.info "Calculating Deltas"
             calculateDeltas(graph)
             // 5. Detect Grime
-            log.info "Detecting Grime"
             findings += detectGrime(graph)
             // end for
         }

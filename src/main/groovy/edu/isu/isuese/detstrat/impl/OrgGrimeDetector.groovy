@@ -507,35 +507,37 @@ class OrgGrimeDetector extends AbstractGrimeDetector {
         types.each { Type other ->
             Node otherNode = typeBiMap[other]
 
-            Relationship rel = factory.createRelationship(relType)
-            rel.persistent = isPersistent(relType)
-            typeGraph.addEdge(node, otherNode, rel)
+            if (otherNode && node) {
+                Relationship rel = factory.createRelationship(relType)
+                rel.persistent = isPersistent(relType)
+                typeGraph.addEdge(node, otherNode, rel)
 
-            Namespace ns1 = type.getParentNamespaces().first()
-            Namespace ns2 = other.getParentNamespaces().first()
-            if (ns1 == ns2) {
-                rel.sameNamespace = true
-            } else {
-                Node nsNode1 = nsBiMap[ns1]
-                Node nsNode2 = nsBiMap[ns2]
+                Namespace ns1 = type.getParentNamespaces().first()
+                Namespace ns2 = other.getParentNamespaces().first()
+                if (ns1 == ns2) {
+                    rel.sameNamespace = true
+                } else {
+                    Node nsNode1 = nsBiMap[ns1]
+                    Node nsNode2 = nsBiMap[ns2]
 
 //                Relationship nsRel = factory.createRelationship(relType)
-                rel.persistent = isPersistent(relType)
+                    rel.persistent = isPersistent(relType)
 
-                if (nsGraph.hasEdgeConnecting(nsNode1, nsNode2)) {
-                    nsGraph.edgeConnecting(nsNode1, nsNode2).ifPresent { Relationship r ->
-                        if (!r.persistent && rel.persistent)
-                            r.persistent = true
-                        if (r instanceof NamespaceRelation) {
-                            r.contained << rel
+                    if (nsGraph.hasEdgeConnecting(nsNode1, nsNode2)) {
+                        nsGraph.edgeConnecting(nsNode1, nsNode2).ifPresent { Relationship r ->
+                            if (!r.persistent && rel.persistent)
+                                r.persistent = true
+                            if (r instanceof NamespaceRelation) {
+                                r.contained << rel
+                            }
                         }
+                    } else {
+                        NamespaceRelation nsr = new NamespaceRelation()
+                        nsGraph.addEdge(nsNode1, nsNode2, nsr)
+                        nsr.contained << rel
+                        if (!nsr.persistent && rel.persistent)
+                            nsr.persistent = true
                     }
-                } else {
-                    NamespaceRelation nsr = new NamespaceRelation()
-                    nsGraph.addEdge(nsNode1, nsNode2, nsr)
-                    nsr.contained << rel
-                    if (!nsr.persistent && rel.persistent)
-                        nsr.persistent = true
                 }
             }
         }
