@@ -31,6 +31,7 @@ import com.google.common.graph.MutableNetwork
 import com.google.common.graph.Network
 import com.google.common.graph.NetworkBuilder
 import edu.isu.isuese.datamodel.*
+import groovy.util.logging.Log4j2
 import org.apache.commons.lang3.tuple.Pair
 import org.apache.commons.lang3.tuple.Triple
 
@@ -38,6 +39,7 @@ import org.apache.commons.lang3.tuple.Triple
  * @author Isaac Griffith
  * @version 1.3.0
  */
+@Log4j2
 class ClassGrimeDetector extends AbstractGrimeDetector {
 
     BiMap<Field, Node> fieldBiMap = HashBiMap.create()
@@ -58,19 +60,24 @@ class ClassGrimeDetector extends AbstractGrimeDetector {
         List<Finding> findings = Lists.newLinkedList()
 
         // 2. Mark each method as either internal or external
+        log.info "Marking Methods"
         markMethods(pattern)
 
         pattern.getTypes().each { Type type ->
             current = type
             // 1. Construct method-attribute bipartite graph
+            log.info "Constructing the graph"
             Network<Node, Relationship> graph = constructGraph(type)
 
             // 3. Mark each method pair as either internal or external
+            log.info "Marking Method Pairs"
             markMethodPairs(graph)
 
             // 4. Calculate delta-TCC and delta-RCI for each method and method pair
+            log.info "Calculating Deltas"
             calculateDeltas(graph)
             // 5. Detect Grime
+            log.info "Detecting Grime"
             findings += detectGrime(graph)
             // end for
         }
