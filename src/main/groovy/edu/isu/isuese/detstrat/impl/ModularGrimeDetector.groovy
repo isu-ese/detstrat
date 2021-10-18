@@ -40,6 +40,7 @@ import edu.montana.gsoc.msusel.rbml.model.*
  */
 class ModularGrimeDetector extends AbstractGrimeDetector {
 
+    PatternInstance instance
     Table<Relationship, String, Integer> metrics = HashBasedTable.create()
     BiMap<Type, Node> nodes = HashBiMap.create()
 
@@ -48,6 +49,7 @@ class ModularGrimeDetector extends AbstractGrimeDetector {
      */
     @Override
     List<Finding> detect(PatternInstance pattern) {
+        this.instance = pattern
         metrics = HashBasedTable.create()
         nodes = HashBiMap.create()
 
@@ -511,12 +513,14 @@ class ModularGrimeDetector extends AbstractGrimeDetector {
                     // if r persistent then
                     if (edge.persistent && edge.invalid) {
                         // add PIG issue for that relationship
-                        findings << createFinding("PIG", nodes.inverse().get(nodePair.source()))
+//                        findings << createFinding("PIG", nodes.inverse().get(nodePair.source()))
+                        findings << createFinding("PIG", instance)
                     }
                     // else
                     else if (edge.invalid) {
                         // add TIG issue for that relationship
-                        findings << createFinding("TIG", nodes.inverse().get(nodePair.source()))
+//                        findings << createFinding("TIG", nodes.inverse().get(nodePair.source()))
+                        findings << createFinding("TIG", instance)
                     }
                 }
                 // else
@@ -526,12 +530,14 @@ class ModularGrimeDetector extends AbstractGrimeDetector {
                         // if Ca increases
                         if (nodePair.target().internal && metrics.get(edge, "Ca") > 0) {
                             // add PEAG issue for that relationship
-                            findings << createFinding("PEAG", nodes.inverse().get(nodePair.source()))
+//                            findings << createFinding("PEAG", nodes.inverse().get(nodePair.source()))
+                            findings << createFinding("PEAG", instance)
                         }
                         // else if Ce increases
                         else if (nodePair.source().internal && metrics.get(edge, "Ce") > 0) {
                             // add PEEG issue for that relationship
-                            findings << createFinding("PEEG", nodes.inverse().get(nodePair.source()))
+//                            findings << createFinding("PEEG", nodes.inverse().get(nodePair.source()))
+                            findings << createFinding("PEEG", instance)
                         }
                     }
                     // else
@@ -539,12 +545,14 @@ class ModularGrimeDetector extends AbstractGrimeDetector {
                         // if Ca increases
                         if (nodePair.target().internal && metrics.get(edge, "Ca") > 0) {
                             // add TEAG issue for that relationship
-                            findings << createFinding("TEAG", nodes.inverse().get(nodePair.source()))
+//                            findings << createFinding("TEAG", nodes.inverse().get(nodePair.source()))
+                            findings << createFinding("TEAG", instance)
                         }
                         // else if Ce increases
                         else if (nodePair.source().internal && metrics.get(edge, "Ce") > 0) {
                             // add TEEG issue for that relationship
-                            findings << createFinding("TEEG", nodes.inverse().get(nodePair.source()))
+//                            findings << createFinding("TEEG", nodes.inverse().get(nodePair.source()))
+                            findings << createFinding("TEEG", instance)
                         }
                     }
                 }

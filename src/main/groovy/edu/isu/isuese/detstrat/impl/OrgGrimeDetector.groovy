@@ -39,6 +39,7 @@ import edu.isu.isuese.detstrat.GraphUtils
  */
 class OrgGrimeDetector extends AbstractGrimeDetector {
 
+    PatternInstance instance
     MutableNetwork<Node, NamespaceRelation> nsGraph
     MutableNetwork<Node, Relationship> typeGraph
 
@@ -56,6 +57,8 @@ class OrgGrimeDetector extends AbstractGrimeDetector {
     List<Finding> detect(PatternInstance pattern) {
         if (!pattern)
             throw new IllegalArgumentException()
+
+        this.instance = pattern
 
         constructGraphs(pattern)
 
@@ -193,7 +196,7 @@ class OrgGrimeDetector extends AbstractGrimeDetector {
             throw new IllegalArgumentException()
 
         Namespace t = nsBiMap.inverse()[graph.incidentNodes(rel).source()]
-        createFinding(name, t)
+        createFinding(name, instance)
     }
 
     Finding createFinding(String name, Node node) {
@@ -201,7 +204,7 @@ class OrgGrimeDetector extends AbstractGrimeDetector {
             throw new IllegalArgumentException()
 
         Type t = typeBiMap.inverse()[node]
-        createFinding(name, t)
+        createFinding(name, instance)
     }
 
     def findPatternNamespaces(PatternInstance p) {
