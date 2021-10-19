@@ -408,25 +408,29 @@ class ClassGrimeDetector extends AbstractGrimeDetector {
             if (methodPairsIndirect[triple].getLeft() && methodPairsIndirect[triple].getRight()) {
                 if (internal) {
                     if (pairDeltas.get(triple, "TCC") < 0) {
+                        findings << createFinding("DIPG", m1)
+                        findings << createFinding("DIPG", m2)
                         findings << createFinding("DIPG", instance)
-//                        findings << createFinding("DIPG", instance)
                     }
                 } else {
                     if (pairDeltas.get(triple, "TCC") < 0 && (m1.getMethodsCalling().isEmpty() || m2.getMethodsCalling().isEmpty())) {
+                        findings << createFinding("DEPG", m1)
+                        findings << createFinding("DEPG", m2)
                         findings << createFinding("DEPG", instance)
-//                        findings << createFinding("DEPG", instance)
                     }
                 }
             } else {
                 if (internal) {
                     if (pairDeltas.get(triple, "TCC") < 0) {
+                        findings << createFinding("IIPG", m1)
+                        findings << createFinding("IIPG", m2)
                         findings << createFinding("IIPG", instance)
-//                        findings << createFinding("IIPG", instance)
                     }
                 } else {
                     if (pairDeltas.get(triple, "TCC") < 0 && (m1.getMethodsCalling().isEmpty() || m2.getMethodsCalling().isEmpty())) {
+                        findings << createFinding("IEPG", m1)
+                        findings << createFinding("IEPG", m2)
                         findings << createFinding("IEPG", instance)
-//                        findings << createFinding("IEPG", m2)
                     }
                 }
             }
@@ -443,24 +447,24 @@ class ClassGrimeDetector extends AbstractGrimeDetector {
             if (!r.indirect) {
                 if (points.source().internal) {
                     if (methodDeltas.get(points.source(), "RCI") < 0) {
-//                        findings << createFinding("DISG", methodBiMap.inverse().get(graph.incidentNodes(r).source()))
+                        findings << createFinding("DISG", methodBiMap.inverse().get(graph.incidentNodes(r).source()))
                         findings << createFinding("DISG", instance)
                     }
                 } else {
                     if (methodDeltas.get(points.source(), "RCI") < 0 && methodBiMap.inverse().get(points.source()).getMethodsCalling().isEmpty()) {
-//                        findings << createFinding("DESG", methodBiMap.inverse().get(graph.incidentNodes(r).source()))
+                        findings << createFinding("DESG", methodBiMap.inverse().get(graph.incidentNodes(r).source()))
                         findings << createFinding("DESG", instance)
                     }
                 }
             } else {
                 if (points.source().internal) {
                     if (methodDeltas.get(points.source(), "RCI") < 0) {
-//                        findings << createFinding("IISG", methodBiMap.inverse().get(graph.incidentNodes(r).source()))
+                        findings << createFinding("IISG", methodBiMap.inverse().get(graph.incidentNodes(r).source()))
                         findings << createFinding("IISG", instance)
                     }
                 } else {
                     if (methodDeltas.get(points.source(), "RCI") < 0 && methodBiMap.inverse().get(points.source()).getMethodsCalling().isEmpty()) {
-//                        findings << createFinding("IESG", methodBiMap.inverse().get(graph.incidentNodes(r).source()))
+                        findings << createFinding("IESG", methodBiMap.inverse().get(graph.incidentNodes(r).source()))
                         findings << createFinding("IESG", instance)
                     }
                 }
