@@ -97,7 +97,9 @@ abstract class AbstractGrimeDetector implements GrimeDetector {
     Finding createFinding(String name, Component comp1, Component comp2, PatternInstance inst) {
         if (!name)
             throw new IllegalArgumentException()
-        if (!comp)
+        if (!comp1)
+            throw new IllegalArgumentException()
+        if (!comp2)
             throw new IllegalArgumentException()
         if (!inst)
             throw new IllegalArgumentException()
