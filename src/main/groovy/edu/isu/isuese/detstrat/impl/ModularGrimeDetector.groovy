@@ -526,12 +526,12 @@ class ModularGrimeDetector extends AbstractGrimeDetector {
                     // if r is persistent
                     if (edge.persistent && edge.invalid) {
                         // if Ca increases
-                        if (nodePair.target().internal && metrics.get(edge, "Ca") > 0) {
+                        if (nodePair.target().internal && metrics.get(edge, "Ca") < 0) {
                             // add PEAG issue for that relationship
                             findings << createFinding("PEAG", nodes.inverse().get(nodePair.source()), instance)
                         }
                         // else if Ce increases
-                        else if (nodePair.source().internal && metrics.get(edge, "Ce") > 0) {
+                        else if (nodePair.source().internal && metrics.get(edge, "Ce") < 0) {
                             // add PEEG issue for that relationship
                             findings << createFinding("PEEG", nodes.inverse().get(nodePair.source()), instance)
                         }
@@ -539,12 +539,12 @@ class ModularGrimeDetector extends AbstractGrimeDetector {
                     // else
                     else if (edge.invalid) {
                         // if Ca increases
-                        if (nodePair.target().internal && metrics.get(edge, "Ca") > 0) {
+                        if (nodePair.target().internal && metrics.get(edge, "Ca") < 0) {
                             // add TEAG issue for that relationship
                             findings << createFinding("TEAG", nodes.inverse().get(nodePair.source()), instance)
                         }
                         // else if Ce increases
-                        else if (nodePair.source().internal && metrics.get(edge, "Ce") > 0) {
+                        else if (nodePair.source().internal && metrics.get(edge, "Ce") < 0) {
                             // add TEEG issue for that relationship
                             findings << createFinding("TEEG", nodes.inverse().get(nodePair.source()), instance)
                         }
