@@ -498,6 +498,7 @@ class ModularGrimeDetector extends AbstractGrimeDetector {
  */
     @Override
     List<Finding> detectGrime(Network<Node, Relationship> graph) {
+        log.info "Detecting Modular Grime"
         if (graph == null)
             throw new IllegalArgumentException()
 
