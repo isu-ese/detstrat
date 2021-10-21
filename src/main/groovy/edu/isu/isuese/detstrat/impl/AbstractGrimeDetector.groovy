@@ -37,14 +37,16 @@ import groovy.util.logging.Log4j2
 @Log4j2
 abstract class AbstractGrimeDetector implements GrimeDetector {
 
-    Finding createFinding(String name, Reference ref) {
+    Finding createFinding(String name, Reference ref, PatternInstance inst) {
         if (!name)
             throw new IllegalArgumentException()
         if (!ref)
             throw new IllegalArgumentException()
+        if (!inst)
+            throw new IllegalArgumentException()
 
         if (RuleProvider.instance.getRule(name))
-            Finding.of(RuleProvider.instance.getRule(name).getKey()).on(ref)
+            Finding.of(RuleProvider.instance.getRule(name).getKey()).on(ref).on(inst)
         else
             null
     }
@@ -62,28 +64,47 @@ abstract class AbstractGrimeDetector implements GrimeDetector {
             null
     }
 
-    Finding createFinding(String name, Namespace ns) {
+    Finding createFinding(String name, Namespace ns, PatternInstance inst) {
         if (!name)
             throw new IllegalArgumentException()
         if (!ns)
             throw new IllegalArgumentException()
+        if (!inst)
+            throw new IllegalArgumentException()
 
         log.info "Finding of $name on ${ns.getNsKey()}"
         if (RuleProvider.instance.getRule(name))
-            Finding.of(RuleProvider.instance.getRule(name).getKey()).on(ns)
+            Finding.of(RuleProvider.instance.getRule(name).getKey()).on(ns).on(inst)
         else
             null
     }
 
-    Finding createFinding(String name, Component comp) {
+    Finding createFinding(String name, Component comp, PatternInstance inst) {
         if (!name)
             throw new IllegalArgumentException()
         if (!comp)
             throw new IllegalArgumentException()
+        if (!inst)
+            throw new IllegalArgumentException()
 
         log.info "Finding of $name on ${comp.getCompKey()}"
         if (RuleProvider.instance.getRule(name))
-            Finding.of(RuleProvider.instance.getRule(name).getKey()).on(comp)
+            Finding.of(RuleProvider.instance.getRule(name).getKey()).on(comp).on(inst)
+        else
+            null
+    }
+
+    Finding createFinding(String name, Component comp1, Component comp2, PatternInstance inst) {
+        if (!name)
+            throw new IllegalArgumentException()
+        if (!comp)
+            throw new IllegalArgumentException()
+        if (!inst)
+            throw new IllegalArgumentException()
+
+        log.info "Finding of $name on ${comp1.getCompKey()} and ${comp2.getCompKey()}"
+        if (RuleProvider.instance.getRule(name))
+            Finding.of(RuleProvider.instance.getRule(name).getKey()).on(comp1).on(comp2).on(inst)
         else
             null
     }

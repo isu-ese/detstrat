@@ -196,8 +196,7 @@ class OrgGrimeDetector extends AbstractGrimeDetector {
             throw new IllegalArgumentException()
 
         Namespace t = nsBiMap.inverse()[graph.incidentNodes(rel).source()]
-        createFinding(name, t)
-        createFinding(name, instance)
+        createFinding(name, t, instance)
     }
 
     Finding createFinding(String name, Node node) {
@@ -205,8 +204,7 @@ class OrgGrimeDetector extends AbstractGrimeDetector {
             throw new IllegalArgumentException()
 
         Type t = typeBiMap.inverse()[node]
-        createFinding(name, t)
-        createFinding(name, instance)
+        createFinding(name, t, instance)
     }
 
     def findPatternNamespaces(PatternInstance p) {
