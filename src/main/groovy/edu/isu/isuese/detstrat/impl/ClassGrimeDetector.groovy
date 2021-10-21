@@ -72,6 +72,8 @@ class ClassGrimeDetector extends AbstractGrimeDetector {
             // 3. Mark each method pair as either internal or external
             markMethodPairs(graph)
 
+            log.info "Number of Method Pairs: ${methodPairs.size()}"
+
             // 4. Calculate delta-TCC and delta-RCI for each method and method pair
             calculateDeltas(graph)
             // 5. Detect Grime
@@ -407,21 +409,21 @@ class ClassGrimeDetector extends AbstractGrimeDetector {
 
             if (methodPairsIndirect[triple].getLeft() && methodPairsIndirect[triple].getRight()) {
                 if (internal) {
-                    if (pairDeltas.get(triple, "TCC") < 0) {
+                    if (pairDeltas.get(triple, "TCC") > 0) {
                         findings << createFinding("DIPG", m1, m2, instance)
                     }
                 } else {
-                    if (pairDeltas.get(triple, "TCC") < 0 && (m1.getMethodsCalling().isEmpty() || m2.getMethodsCalling().isEmpty())) {
+                    if (pairDeltas.get(triple, "TCC") > 0 && (m1.getMethodsCalling().isEmpty() || m2.getMethodsCalling().isEmpty())) {
                         findings << createFinding("DEPG", m1, m2, instance)
                     }
                 }
             } else {
                 if (internal) {
-                    if (pairDeltas.get(triple, "TCC") < 0) {
+                    if (pairDeltas.get(triple, "TCC") > 0) {
                         findings << createFinding("IIPG", m1, m2, instance)
                     }
                 } else {
-                    if (pairDeltas.get(triple, "TCC") < 0 && (m1.getMethodsCalling().isEmpty() || m2.getMethodsCalling().isEmpty())) {
+                    if (pairDeltas.get(triple, "TCC") > 0 && (m1.getMethodsCalling().isEmpty() || m2.getMethodsCalling().isEmpty())) {
                         findings << createFinding("IEPG", m1, m2, instance)
                     }
                 }
@@ -438,21 +440,21 @@ class ClassGrimeDetector extends AbstractGrimeDetector {
             EndpointPair<Node> points = graph.incidentNodes(r)
             if (!r.indirect) {
                 if (points.source().internal) {
-                    if (methodDeltas.get(points.source(), "RCI") < 0) {
+                    if (methodDeltas.get(points.source(), "RCI") > 0) {
                         findings << createFinding("DISG", methodBiMap.inverse().get(graph.incidentNodes(r).source()), instance)
                     }
                 } else {
-                    if (methodDeltas.get(points.source(), "RCI") < 0 && methodBiMap.inverse().get(points.source()).getMethodsCalling().isEmpty()) {
+                    if (methodDeltas.get(points.source(), "RCI") > 0 && methodBiMap.inverse().get(points.source()).getMethodsCalling().isEmpty()) {
                         findings << createFinding("DESG", methodBiMap.inverse().get(graph.incidentNodes(r).source()), instance)
                     }
                 }
             } else {
                 if (points.source().internal) {
-                    if (methodDeltas.get(points.source(), "RCI") < 0) {
+                    if (methodDeltas.get(points.source(), "RCI") > 0) {
                         findings << createFinding("IISG", methodBiMap.inverse().get(graph.incidentNodes(r).source()), instance)
                     }
                 } else {
-                    if (methodDeltas.get(points.source(), "RCI") < 0 && methodBiMap.inverse().get(points.source()).getMethodsCalling().isEmpty()) {
+                    if (methodDeltas.get(points.source(), "RCI") > 0 && methodBiMap.inverse().get(points.source()).getMethodsCalling().isEmpty()) {
                         findings << createFinding("IESG", methodBiMap.inverse().get(graph.incidentNodes(r).source()), instance)
                     }
                 }
