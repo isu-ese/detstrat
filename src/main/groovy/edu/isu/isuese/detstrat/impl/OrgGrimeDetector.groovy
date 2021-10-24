@@ -150,53 +150,59 @@ class OrgGrimeDetector extends AbstractGrimeDetector {
             Node src = pair.source()
             Node dest = pair.target()
 
+            Namespace nsSrc = nsBiMap.inverse()[src]
+            Namespace nsDest = nsBiMap.inverse()[dest]
+
             // MPECG
             if (rel.persistent && ((dest.patternInternal && !src.patternInternal) || (src.patternInternal && !dest.patternInternal)) &&
                     cycle(src, dest, rel)) {
-                findings << createFinding("MPECG", rel, nsGraph)
+                findings << createFinding("MPECG", nsSrc, nsDest, instance)
             }
             // MTECG
             else if (!rel.persistent && ((dest.patternInternal && !src.patternInternal) || (src.patternInternal && !dest.patternInternal)) &&
                     cycle(src, dest, rel)) {
-                findings << createFinding("MTECG", rel, nsGraph)
+                findings << createFinding("MTECG", nsSrc, nsDest, instance)
             }
             // MPICG
             else if (rel.persistent && (dest.patternInternal && src.patternInternal) && cycle(src, dest, rel)) {
-                findings << createFinding("MPICG", rel, nsGraph)
+                findings << createFinding("MPICG", nsSrc, nsDest, instance)
             }
             // MTICG
             else if (!rel.persistent && (dest.patternInternal && src.patternInternal) && cycle(src, dest, rel)) {
-                findings << createFinding("MTICG", rel, nsGraph)
+                findings << createFinding("MTICG", nsSrc, nsDest, instance)
             }
             // MPEUG
             else if (rel.persistent && ((dest.patternInternal && !src.patternInternal) || (src.patternInternal && !dest.patternInternal)) &&
                     dropInstability(rel)) {
-                findings << createFinding("MPEUG", rel, nsGraph)
+                findings << createFinding("MPEUG", nsSrc, nsDest, instance)
             }
             // MTEUG
             else if (!rel.persistent && ((dest.patternInternal && !src.patternInternal) || (src.patternInternal && !dest.patternInternal)) &&
                     dropInstability(rel)) {
-                findings << createFinding("MTEUG", rel, nsGraph)
+                findings << createFinding("MTEUG", nsSrc, nsDest, instance)
             }
             // MPIUG
             else if (rel.persistent && (dest.patternInternal && src.patternInternal) && dropInstability(rel)) {
-                findings << createFinding("MPIUG", rel, nsGraph)
+                findings << createFinding("MPIUG", nsSrc, nsDest, instance)
             }
             // MTIUG
             else if (!rel.persistent && (dest.patternInternal && src.patternInternal) && dropInstability(rel)) {
-                findings << createFinding("MTIUG", rel, nsGraph)
+                findings << createFinding("MTIUG", nsSrc, nsDest, instance)
             }
         }
 
         findings
     }
 
-    Finding createFinding(String name, NamespaceRelation rel, Network<Node, NamespaceRelation> graph) {
-        if (!name || !rel || graph == null)
+    Finding createFinding(String name, Namespace src, Namespace dest, PatternInstance inst) {
+        if (!name || !src || !dest || !inst)
             throw new IllegalArgumentException()
 
-        Namespace t = nsBiMap.inverse()[graph.incidentNodes(rel).source()]
-        createFinding(name, t, instance)
+        log.info "Finding of $name on ${src.getNsKey()} and ${dest.getNsKey()}"
+        if (RuleProvider.instance.getRule(name))
+            Finding.of(RuleProvider.instance.getRule(name).getKey()).on(src).on(dest).on(inst)
+        else
+            null
     }
 
     Finding createFinding(String name, Node node) {

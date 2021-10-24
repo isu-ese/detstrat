@@ -406,25 +406,26 @@ class ClassGrimeDetector extends AbstractGrimeDetector {
         methodPairs.each { Triple<Node, Node, Node> triple, boolean internal ->
             Method m1 = methodBiMap.inverse().get(triple.getLeft())
             Method m2 = methodBiMap.inverse().get(triple.getMiddle())
+            Component comp = fieldBiMap.inverse().get(triple.getRight())
 
             if (methodPairsIndirect[triple].getLeft() && methodPairsIndirect[triple].getRight()) {
                 if (internal) {
                     if (pairDeltas.get(triple, "TCC") < 0) {
-                        findings << createFinding("DIPG", m1, m2, instance)
+                        findings << createFinding("DIPG", m1, m2, comp, instance)
                     }
                 } else {
                     if (pairDeltas.get(triple, "TCC") < 0 && (m1.getMethodsCalling().isEmpty() || m2.getMethodsCalling().isEmpty())) {
-                        findings << createFinding("DEPG", m1, m2, instance)
+                        findings << createFinding("DEPG", m1, m2, comp, instance)
                     }
                 }
             } else {
                 if (internal) {
                     if (pairDeltas.get(triple, "TCC") < 0) {
-                        findings << createFinding("IIPG", m1, m2, instance)
+                        findings << createFinding("IIPG", m1, m2, comp, instance)
                     }
                 } else {
                     if (pairDeltas.get(triple, "TCC") < 0 && (m1.getMethodsCalling().isEmpty() || m2.getMethodsCalling().isEmpty())) {
-                        findings << createFinding("IEPG", m1, m2, instance)
+                        findings << createFinding("IEPG", m1, m2, comp, instance)
                     }
                 }
             }
@@ -438,24 +439,27 @@ class ClassGrimeDetector extends AbstractGrimeDetector {
 
         graph.edges().each { Relationship r ->
             EndpointPair<Node> points = graph.incidentNodes(r)
+            Method src = methodBiMap.inverse().get(points.source())
+            Method dest = methodBiMap.inverse().get(points.target())
+
             if (!r.indirect) {
                 if (points.source().internal) {
                     if (methodDeltas.get(points.source(), "RCI") < 0) {
-                        findings << createFinding("DISG", methodBiMap.inverse().get(graph.incidentNodes(r).source()), instance)
+                        findings << createFinding("DISG", src, dest, instance)
                     }
                 } else {
-                    if (methodDeltas.get(points.source(), "RCI") < 0 && methodBiMap.inverse().get(points.source()).getMethodsCalling().isEmpty()) {
-                        findings << createFinding("DESG", methodBiMap.inverse().get(graph.incidentNodes(r).source()), instance)
+                    if (methodDeltas.get(points.source(), "RCI") < 0 && src.getMethodsCalling().isEmpty()) {
+                        findings << createFinding("DESG", src, dest, instance)
                     }
                 }
             } else {
                 if (points.source().internal) {
                     if (methodDeltas.get(points.source(), "RCI") < 0) {
-                        findings << createFinding("IISG", methodBiMap.inverse().get(graph.incidentNodes(r).source()), instance)
+                        findings << createFinding("IISG", src, dest, instance)
                     }
                 } else {
-                    if (methodDeltas.get(points.source(), "RCI") < 0 && methodBiMap.inverse().get(points.source()).getMethodsCalling().isEmpty()) {
-                        findings << createFinding("IESG", methodBiMap.inverse().get(graph.incidentNodes(r).source()), instance)
+                    if (methodDeltas.get(points.source(), "RCI") < 0 && src.getMethodsCalling().isEmpty()) {
+                        findings << createFinding("IESG", src, dest, instance)
                     }
                 }
             }

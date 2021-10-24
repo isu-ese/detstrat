@@ -111,6 +111,25 @@ abstract class AbstractGrimeDetector implements GrimeDetector {
             null
     }
 
+    Finding createFinding(String name, Component comp1, Component comp2, Component comp3, PatternInstance inst) {
+        if (!name)
+            throw new IllegalArgumentException()
+        if (!comp1)
+            throw new IllegalArgumentException()
+        if (!comp2)
+            throw new IllegalArgumentException()
+        if (!comp3)
+            throw new IllegalArgumentException()
+        if (!inst)
+            throw new IllegalArgumentException()
+
+        log.info "Finding of $name on ${comp1.getCompKey()} and ${comp2.getCompKey()}"
+        if (RuleProvider.instance.getRule(name))
+            Finding.of(RuleProvider.instance.getRule(name).getKey()).on(comp1).on(comp2).on(comp3).on(inst)
+        else
+            null
+    }
+
     SPS loadRBML(PatternInstance inst) {
         if (!inst)
             throw new IllegalArgumentException()
