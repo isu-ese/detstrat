@@ -62,6 +62,13 @@ class ClassGrimeDetector extends AbstractGrimeDetector {
         List<Finding> findings = Lists.newLinkedList()
 
         pattern.getTypes().each { Type type ->
+            fieldBiMap = HashBiMap.create()
+            methodBiMap = HashBiMap.create()
+            methodPairs = Maps.newHashMap()
+            methodPairsIndirect = Maps.newHashMap()
+            methodDeltas = HashBasedTable.create()
+            pairDeltas = HashBasedTable.create()
+
             current = type
             // 1. Construct method-attribute bipartite graph
             Network<Node, Relationship> graph = constructGraph(type)
