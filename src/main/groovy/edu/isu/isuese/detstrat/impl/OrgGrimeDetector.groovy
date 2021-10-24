@@ -32,11 +32,13 @@ import com.google.common.graph.Network
 import com.google.common.graph.NetworkBuilder
 import edu.isu.isuese.datamodel.*
 import edu.isu.isuese.detstrat.GraphUtils
+import groovy.util.logging.Log4j2
 
 /**
  * @author Isaac Griffith
  * @version 1.3.0
  */
+@Log4j2
 class OrgGrimeDetector extends AbstractGrimeDetector {
 
     PatternInstance instance
