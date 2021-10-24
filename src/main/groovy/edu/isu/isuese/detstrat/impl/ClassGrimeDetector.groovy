@@ -440,7 +440,9 @@ class ClassGrimeDetector extends AbstractGrimeDetector {
         graph.edges().each { Relationship r ->
             EndpointPair<Node> points = graph.incidentNodes(r)
             Method src = methodBiMap.inverse().get(points.source())
+            log.info "Target Name: ${points.target().getName()}"
             Method dest = methodBiMap.inverse().get(points.target())
+            log.info "Dest: ${dest}"
 
             if (!r.indirect) {
                 if (points.source().internal) {
