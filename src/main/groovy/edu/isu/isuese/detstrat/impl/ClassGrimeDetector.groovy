@@ -61,13 +61,13 @@ class ClassGrimeDetector extends AbstractGrimeDetector {
         this.instance = pattern
         List<Finding> findings = Lists.newLinkedList()
 
-        // 2. Mark each method as either internal or external
-        markMethods(pattern)
-
         pattern.getTypes().each { Type type ->
             current = type
             // 1. Construct method-attribute bipartite graph
             Network<Node, Relationship> graph = constructGraph(type)
+
+            // 2. Mark each method as either internal or external
+            markMethods(instance, type)
 
             // 3. Mark each method pair as either internal or external
             markMethodPairs(graph)
@@ -149,7 +149,7 @@ class ClassGrimeDetector extends AbstractGrimeDetector {
         }
     }
 
-    protected void markMethods(PatternInstance inst) {
+    protected void markMethods(PatternInstance inst, Type type) {
         if (!inst)
             throw new IllegalArgumentException()
 
@@ -157,7 +157,8 @@ class ClassGrimeDetector extends AbstractGrimeDetector {
         // else mark method m as external
 
         List<RoleBinding> bindings = inst.roleBindings.findAll() { RoleBinding rb ->
-            rb.getReference()?.getType() == RefType.METHOD
+            rb.getReference()?.getType() == RefType.METHOD &&
+                    rb.getReference()?.getRefKey()?.startsWith(type.getRefKey())
         }
 
         bindings.each { RoleBinding rb ->
@@ -444,24 +445,26 @@ class ClassGrimeDetector extends AbstractGrimeDetector {
             Method dest = methodBiMap.inverse().get(points.target())
             log.info "Dest: ${dest}"
 
-            if (!r.indirect) {
-                if (points.source().internal) {
-                    if (methodDeltas.get(points.source(), "RCI") < 0) {
-                        findings << createFinding("DISG", src, dest, instance)
+            if (dest) {
+                if (!r.indirect) {
+                    if (points.source().internal) {
+                        if (methodDeltas.get(points.source(), "RCI") < 0) {
+                            findings << createFinding("DISG", src, dest, instance)
+                        }
+                    } else {
+                        if (methodDeltas.get(points.source(), "RCI") < 0 && src.getMethodsCalling().isEmpty()) {
+                            findings << createFinding("DESG", src, dest, instance)
+                        }
                     }
                 } else {
-                    if (methodDeltas.get(points.source(), "RCI") < 0 && src.getMethodsCalling().isEmpty()) {
-                        findings << createFinding("DESG", src, dest, instance)
-                    }
-                }
-            } else {
-                if (points.source().internal) {
-                    if (methodDeltas.get(points.source(), "RCI") < 0) {
-                        findings << createFinding("IISG", src, dest, instance)
-                    }
-                } else {
-                    if (methodDeltas.get(points.source(), "RCI") < 0 && src.getMethodsCalling().isEmpty()) {
-                        findings << createFinding("IESG", src, dest, instance)
+                    if (points.source().internal) {
+                        if (methodDeltas.get(points.source(), "RCI") < 0) {
+                            findings << createFinding("IISG", src, dest, instance)
+                        }
+                    } else {
+                        if (methodDeltas.get(points.source(), "RCI") < 0 && src.getMethodsCalling().isEmpty()) {
+                            findings << createFinding("IESG", src, dest, instance)
+                        }
                     }
                 }
             }
