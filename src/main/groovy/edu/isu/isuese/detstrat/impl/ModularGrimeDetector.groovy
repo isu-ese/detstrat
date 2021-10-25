@@ -393,7 +393,8 @@ class ModularGrimeDetector extends AbstractGrimeDetector {
 
         graph.edges().findAll { !it.marked }.each { edge ->
             edge.marked = true
-            edge.invalid = false
+//            edge.invalid = false
+            edge.invalid = true
         }
     }
 
