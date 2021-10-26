@@ -418,22 +418,22 @@ class ClassGrimeDetector extends AbstractGrimeDetector {
 
             if (methodPairsIndirect[triple].getLeft() && methodPairsIndirect[triple].getRight()) {
                 if (internal) {
-                    if (pairDeltas.get(triple, "TCC") < 0) {
-                        findings << createFinding("DIPG", m1, m2, comp, instance)
+                    if (pairDeltas.get(triple, "TCC") > 0) {
+                        findings << createFinding("DIPG", m1.getParentType(), m1, m2, comp, instance)
                     }
                 } else {
-                    if (pairDeltas.get(triple, "TCC") < 0 && (m1.getMethodsCalling().isEmpty() || m2.getMethodsCalling().isEmpty())) {
-                        findings << createFinding("DEPG", m1, m2, comp, instance)
+                    if (pairDeltas.get(triple, "TCC") > 0 && (m1.getMethodsCalling().isEmpty() || m2.getMethodsCalling().isEmpty())) {
+                        findings << createFinding("DEPG", m1.getParentType(), m1, m2, comp, instance)
                     }
                 }
             } else {
                 if (internal) {
-                    if (pairDeltas.get(triple, "TCC") < 0) {
-                        findings << createFinding("IIPG", m1, m2, comp, instance)
+                    if (pairDeltas.get(triple, "TCC") > 0) {
+                        findings << createFinding("IIPG", m1.getParentType(), m1, m2, comp, instance)
                     }
                 } else {
-                    if (pairDeltas.get(triple, "TCC") < 0 && (m1.getMethodsCalling().isEmpty() || m2.getMethodsCalling().isEmpty())) {
-                        findings << createFinding("IEPG", m1, m2, comp, instance)
+                    if (pairDeltas.get(triple, "TCC") > 0 && (m1.getMethodsCalling().isEmpty() || m2.getMethodsCalling().isEmpty())) {
+                        findings << createFinding("IEPG", m1.getParentType(), m1, m2, comp, instance)
                     }
                 }
             }
@@ -455,22 +455,22 @@ class ClassGrimeDetector extends AbstractGrimeDetector {
             if (dest) {
                 if (!r.indirect) {
                     if (points.source().internal) {
-                        if (methodDeltas.get(points.source(), "RCI") < 0) {
-                            findings << createFinding("DISG", src, dest, instance)
+                        if (methodDeltas.get(points.source(), "RCI") > 0) {
+                            findings << createFinding("DISG", src.getParentType(), src, dest, instance)
                         }
                     } else {
-                        if (methodDeltas.get(points.source(), "RCI") < 0 && src.getMethodsCalling().isEmpty()) {
-                            findings << createFinding("DESG", src, dest, instance)
+                        if (methodDeltas.get(points.source(), "RCI") > 0 && src.getMethodsCalling().isEmpty()) {
+                            findings << createFinding("DESG", src.getParentType(), src, dest, instance)
                         }
                     }
                 } else {
                     if (points.source().internal) {
-                        if (methodDeltas.get(points.source(), "RCI") < 0) {
-                            findings << createFinding("IISG", src, dest, instance)
+                        if (methodDeltas.get(points.source(), "RCI") > 0) {
+                            findings << createFinding("IISG", src.getParentType(), src, dest, instance)
                         }
                     } else {
-                        if (methodDeltas.get(points.source(), "RCI") < 0 && src.getMethodsCalling().isEmpty()) {
-                            findings << createFinding("IESG", src, dest, instance)
+                        if (methodDeltas.get(points.source(), "RCI") > 0 && src.getMethodsCalling().isEmpty()) {
+                            findings << createFinding("IESG", src.getParentType(), src, dest, instance)
                         }
                     }
                 }

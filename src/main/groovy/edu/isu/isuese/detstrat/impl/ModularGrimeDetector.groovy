@@ -515,7 +515,7 @@ class ModularGrimeDetector extends AbstractGrimeDetector {
                 EndpointPair<Node> nodePair = graph.incidentNodes(edge)
                 Type src = nodes.inverse().get(nodePair.source())
                 Type dest = nodes.inverse().get(nodePair.target())
-                if (nodePair.source().internal && nodePair.target().internal) {
+                if (nodePair.source().internal && nodePair.target().internal && (metrics.get(edge, "Ca") < 0 || metrics.get(edge, "Ce") < 0)) {
                     // if r persistent then
                     if (edge.persistent && edge.invalid) {
                         // add PIG issue for that relationship
