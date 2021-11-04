@@ -416,25 +416,17 @@ class ClassGrimeDetector extends AbstractGrimeDetector {
             Method m2 = methodBiMap.inverse().get(triple.getMiddle())
             Component comp = fieldBiMap.inverse().get(triple.getRight())
 
-            if (methodPairsIndirect[triple].getLeft() && methodPairsIndirect[triple].getRight()) {
-                if (internal) {
-                    if (pairDeltas.get(triple, "TCC") > 0) {
-                        findings << createFinding("DIPG", m1.getParentType(), m1, m2, comp, instance)
-                    }
-                } else {
-                    if (pairDeltas.get(triple, "TCC") > 0 && (m1.getMethodsCalling().isEmpty() || m2.getMethodsCalling().isEmpty())) {
-                        findings << createFinding("DEPG", m1.getParentType(), m1, m2, comp, instance)
-                    }
+            if (!methodPairsIndirect[triple].getLeft() && !methodPairsIndirect[triple].getRight()) {
+                if (internal && pairDeltas.get(triple, "TCC") < 0 && (m1.getMethodsCalling().isEmpty() || m2.getMethodsCalling().isEmpty())) {
+                    findings << createFinding("DIPG", m1.getParentType(), m1, m2, comp, instance)
+                } else if (pairDeltas.get(triple, "TCC") < 0 && (m1.getMethodsCalling().isEmpty() || m2.getMethodsCalling().isEmpty())) {
+                    findings << createFinding("DEPG", m1.getParentType(), m1, m2, comp, instance)
                 }
             } else {
-                if (internal) {
-                    if (pairDeltas.get(triple, "TCC") > 0) {
-                        findings << createFinding("IIPG", m1.getParentType(), m1, m2, comp, instance)
-                    }
-                } else {
-                    if (pairDeltas.get(triple, "TCC") > 0 && (m1.getMethodsCalling().isEmpty() || m2.getMethodsCalling().isEmpty())) {
-                        findings << createFinding("IEPG", m1.getParentType(), m1, m2, comp, instance)
-                    }
+                if (internal && pairDeltas.get(triple, "TCC") < 0 && (m1.getMethodsCalling().isEmpty() || m2.getMethodsCalling().isEmpty())) {
+                    findings << createFinding("IIPG", m1.getParentType(), m1, m2, comp, instance)
+                } else if (pairDeltas.get(triple, "TCC") < 0 && (m1.getMethodsCalling().isEmpty() || m2.getMethodsCalling().isEmpty())) {
+                    findings << createFinding("IEPG", m1.getParentType(), m1, m2, comp, instance)
                 }
             }
         }
@@ -449,30 +441,21 @@ class ClassGrimeDetector extends AbstractGrimeDetector {
             EndpointPair<Node> points = graph.incidentNodes(r)
             Method src = methodBiMap.inverse().get(points.source())
             log.info "Target Name: ${points.target().getName()}"
-            Method dest = methodBiMap.inverse().get(points.target())
+            Component dest = methodBiMap.inverse().get(points.target())
             log.info "Dest: ${dest}"
 
-            if (dest) {
-                if (!r.indirect) {
-                    if (points.source().internal) {
-                        if (methodDeltas.get(points.source(), "RCI") > 0) {
-                            findings << createFinding("DISG", src.getParentType(), src, dest, instance)
-                        }
-                    } else {
-                        if (methodDeltas.get(points.source(), "RCI") > 0 && src.getMethodsCalling().isEmpty()) {
-                            findings << createFinding("DESG", src.getParentType(), src, dest, instance)
-                        }
-                    }
-                } else {
-                    if (points.source().internal) {
-                        if (methodDeltas.get(points.source(), "RCI") > 0) {
-                            findings << createFinding("IISG", src.getParentType(), src, dest, instance)
-                        }
-                    } else {
-                        if (methodDeltas.get(points.source(), "RCI") > 0 && src.getMethodsCalling().isEmpty()) {
-                            findings << createFinding("IESG", src.getParentType(), src, dest, instance)
-                        }
-                    }
+            if (!dest) {
+                dest = fieldBiMap.inverse().get(points.target())
+                if (points.source().internal && methodDeltas.get(points.source(), "RCI") < 0 && src.getMethodsCalling().isEmpty()) {
+                    findings << createFinding("DISG", src.getParentType(), src, dest, instance)
+                } else if (methodDeltas.get(points.source(), "RCI") < 0 && src.getMethodsCalling().isEmpty()) {
+                    findings << createFinding("DESG", src.getParentType(), src, dest, instance)
+                }
+            } else {
+                if (points.source().internal && methodDeltas.get(points.source(), "RCI") < 0 && src.getMethodsCalling().isEmpty()) {
+                    findings << createFinding("IISG", src.getParentType(), src, dest, instance)
+                } else if (methodDeltas.get(points.source(), "RCI") < 0 && src.getMethodsCalling().isEmpty()) {
+                    findings << createFinding("IESG", src.getParentType(), src, dest, instance)
                 }
             }
         }

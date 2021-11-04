@@ -515,14 +515,14 @@ class ModularGrimeDetector extends AbstractGrimeDetector {
                 EndpointPair<Node> nodePair = graph.incidentNodes(edge)
                 Type src = nodes.inverse().get(nodePair.source())
                 Type dest = nodes.inverse().get(nodePair.target())
-                if (nodePair.source().internal && nodePair.target().internal && (metrics.get(edge, "Ca") < 0 || metrics.get(edge, "Ce") < 0)) {
+                if (nodePair.source().internal && nodePair.target().internal) {
                     // if r persistent then
-                    if (edge.persistent && edge.invalid) {
+                    if (edge.persistent) {
                         // add PIG issue for that relationship
                         findings << createFinding("PIG", src, dest, instance)
                     }
                     // else
-                    else if (edge.invalid) {
+                    else {
                         // add TIG issue for that relationship
                         findings << createFinding("TIG", src, dest, instance)
                     }
@@ -530,27 +530,27 @@ class ModularGrimeDetector extends AbstractGrimeDetector {
                 // else
                 else if (nodePair.source().internal || nodePair.target().internal) {
                     // if r is persistent
-                    if (edge.persistent && edge.invalid) {
+                    if (edge.persistent) {
                         // if Ca increases
                         if (nodePair.target().internal && metrics.get(edge, "Ca") < 0) {
                             // add PEAG issue for that relationship
                             findings << createFinding("PEAG", src, dest, instance)
                         }
                         // else if Ce increases
-                        else if (nodePair.source().internal && metrics.get(edge, "Ce") < 0) {
+                        if (nodePair.source().internal && metrics.get(edge, "Ce") < 0) {
                             // add PEEG issue for that relationship
                             findings << createFinding("PEEG", src, dest, instance)
                         }
                     }
                     // else
-                    else if (edge.invalid) {
+                    else {
                         // if Ca increases
                         if (nodePair.target().internal && metrics.get(edge, "Ca") < 0) {
                             // add TEAG issue for that relationship
                             findings << createFinding("TEAG", src, dest, instance)
                         }
                         // else if Ce increases
-                        else if (nodePair.source().internal && metrics.get(edge, "Ce") < 0) {
+                        if (nodePair.source().internal && metrics.get(edge, "Ce") < 0) {
                             // add TEEG issue for that relationship
                             findings << createFinding("TEEG", src, dest, instance)
                         }
